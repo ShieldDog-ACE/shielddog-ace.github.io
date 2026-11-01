@@ -18,6 +18,10 @@
  * 用法：
  *   浏览器 —— <script src="assets/js/exam-paper.js"></script> 后用 window.MIAO_PAPER.gradePaper(exam, answers)
  *   Node   —— const PAPER = require("./frontend/assets/js/exam-paper.js"); PAPER.gradePaper(exam, answers)
+ *
+ * 第二十轮起这里还有第二种形状：`mode:"ide"` 的单编辑器卷（一整块编辑器 + 逐条判定），
+ * 入口是 gradeIde(exam, buffer) —— 判分本体仍是 TYPES.code，多出来的只有「取独行 // 之后的代码」
+ * 与「先剥注释再匹配」这两步，见下面 单编辑器卷 那一节。
  */
 (function (root, factory) {
   var api = factory();
@@ -157,7 +161,7 @@
     return i >= 0 && i < opts.length ? String(opts[i]) : "第 " + (i + 1) + " 项";
   }
 
-  /* ---------- 六种题型 ----------
+  /* ---------- 七种题型 ----------
      每个函数返回 { pts, mark, your, right, saw, extra }：
        pts  该题得分（0 ~ q.score）
        mark "ok" 对 / "half" 半对 / "no" 错
@@ -220,12 +224,18 @@
     };
   };
 
+  /* 复盘里「正确答案」那一栏：题目给了 sample（一条具体写法）就先展示它，
+     只给 acceptRegex 时展示正则 —— 裸正则给读者看等于没给答案，所以出题时该带上 sample。 */
+  function sampleText(q, fallback) {
+    return q && q.sample ? "参考写法：" + String(q.sample).replace(/\n/g, " ⏎ ") : fallback;
+  }
+
   /* 填空：accept 里任一答案宽松命中即满分 */
   TYPES.blank = function (q, raw) {
     var acc = listOf(q.accept !== undefined ? q.accept : (q.answers !== undefined ? q.answers : q.answer))
       .filter(function (x) { return x != null && normText(x) !== ""; });
     var reList = [].concat(q.acceptRegex || []);
-    var rightLabel = acc.length ? acc.join(" / ") : (reList.length ? "符合 " + patText(reList[0]) : "（考卷没给可接受答案）");
+    var rightLabel = sampleText(q, acc.length ? acc.join(" / ") : (reList.length ? "符合 " + patText(reList[0]) : "（考卷没给可接受答案）"));
     if (isBlank(raw)) {
       return { pts: 0, mark: "no", your: NO_ANSWER, right: rightLabel, saw: "没作答，这题 " + (q.score || 0) + " 分全丢了" };
     }
@@ -247,7 +257,7 @@
   TYPES.code = function (q, raw) {
     var pats = [].concat(q.acceptRegex !== undefined ? q.acceptRegex : (q.accept !== undefined ? q.accept : q.answer));
     pats = pats.filter(function (p) { return p != null && String(p.pattern !== undefined ? p.pattern : p) !== ""; });
-    var rightLabel = pats.length ? pats.map(patText).join(" 且 ") : "（考卷没给 acceptRegex）";
+    var rightLabel = sampleText(q, pats.length ? pats.map(patText).join(" 且 ") : "（考卷没给 acceptRegex）");
     if (isBlank(raw)) {
       return { pts: 0, mark: "no", your: NO_ANSWER, right: rightLabel, saw: "没作答，这题 " + (q.score || 0) + " 分全丢了" };
     }
@@ -262,7 +272,10 @@
       pts: ok ? (q.score || 0) : 0, mark: ok ? "ok" : "no",
       your: yourTxt, right: rightLabel,
       saw: ok ? "关键处写对了：命中 " + hits + "/" + pats.length + " 条特征（" + (q.matchAny ? "命中任一条即算对" : "要求条条都在") + "；空格、缩进、变量名一概不计较）"
-        : (miss.length ? "没找到这些关键写法：" + miss.join(" 且 ") + "；你写的是 " + yourTxt : "考卷数据有问题（没给 acceptRegex），这题没法判")
+        : (miss.length ? (q.sample
+          ? "没写到要点上。参考写法：" + String(q.sample).replace(/\n/g, " ⏎ ") + " —— 判分只认关键写法，空格、缩进、变量名都不计较"
+          : "没找到这些关键写法：" + miss.join(" 且 ")) + "；你写的是 " + yourTxt
+          : "考卷数据有问题（没给 acceptRegex），这题没法判")
     };
   };
 
@@ -319,6 +332,67 @@
     };
   };
 
+  /* 勾线配对：左边一项连右边一项，按连对的对数给分（与英语卷那套 wireMatch 同一交互）。
+     数据形状：left[] / right[] / answer{ 左标签: 右标签 }。
+     答卷可以是 {左标签: 右标签}，也可以写索引（"0": 2）—— 界面点选给的是标签，
+     索引那条路是给 Node 侧自测和手搓答卷留的。标签本身按 textEq 宽松认，
+     所以大小写、全半角、多打空格都不该判错。 */
+  TYPES.match = function (q, raw) {
+    var universe = matchUniverse(q);
+    var pairs = universe.pairs;
+    var rightLabel = pairs.map(function (p) { return p.l + " → " + p.r; }).join("；") || "（考卷没给配对答案）";
+    if (isBlank(raw)) {
+      return { pts: 0, mark: "no", your: NO_ANSWER, right: rightLabel, saw: "没作答，这题 " + (q.score || 0) + " 分全丢了" };
+    }
+    var mine = {}, junk = [];
+    Object.keys(raw).forEach(function (k) {
+      var l = resolveSide(universe.left, k);
+      var r = resolveSide(universe.right, raw[k]);
+      if (l == null) { junk.push(clip(normText(k), 24)); return; }
+      mine[l] = r == null ? clip(normText(raw[k]), 24) : r;
+    });
+    var hit = 0, bad = [];
+    pairs.forEach(function (p) {
+      if (mine[p.l] != null && textEq(mine[p.l], p.r)) { hit++; return; }
+      bad.push(p.l + " 应连 " + p.r + (mine[p.l] == null ? "（没连）" : "，你连了 " + mine[p.l]));
+    });
+    var n = pairs.length;
+    var pts = n ? Math.round((q.score || 0) * hit / n) : 0;
+    var mark = hit === n && n > 0 ? "ok" : (hit > 0 ? "half" : "no");
+    var yourLabel = Object.keys(mine).map(function (l) { return l + " → " + mine[l]; })
+      .concat(junk.map(function (j) { return j + "（左边没这一项）"; })).join("；") || "一条都没连";
+    return {
+      pts: pts, mark: mark, your: clip(yourLabel, 90), right: rightLabel,
+      saw: mark === "ok" ? "全连对（" + hit + "/" + n + " 对）"
+        : "连对 " + hit + "/" + n + " 对，给 " + pts + "/" + (q.score || 0) + " 分 —— " + (bad.concat(junk.length ? ["「" + junk.join("、") + "」不是左边的项"] : []).join("；") || "没有对上的配对")
+    };
+  };
+
+  /* 配对题的项表：left/right 别名一并认（steps/options/items 都可能是出题人顺手写的） */
+  function matchUniverse(q) {
+    var left = [].concat(q.left !== undefined ? q.left : (q.items !== undefined ? q.items : []));
+    var right = [].concat(q.right !== undefined ? q.right : (q.options !== undefined ? q.options : []));
+    var ans = q.answer !== undefined ? q.answer : (q.correct !== undefined ? q.correct : q.answers);
+    var pairs = [];
+    if (ans && typeof ans === "object" && !Array.isArray(ans)) {
+      Object.keys(ans).forEach(function (k) {
+        var l = resolveSide(left, k), r = resolveSide(right, ans[k]);
+        if (l != null && r != null) pairs.push({ l: l, r: r });
+      });
+    }
+    return { left: left, right: right, pairs: pairs };
+  }
+  /* 一个项可以是标签也可以是索引；认不出来返回 null（复盘里点名叫出「不是选项」） */
+  function resolveSide(list, v) {
+    if (v == null) return null;
+    if (typeof v === "number" || /^\s*-?\d+\s*$/.test(String(v))) {
+      var n = Number(normText(v));
+      return n >= 0 && n < list.length ? String(list[n]) : null;
+    }
+    for (var i = 0; i < list.length; i++) if (textEq(list[i], v)) return String(list[i]);
+    return null;
+  }
+
   /* 把「索引 / 文本」混着的顺序答案统一成人话标签序列 */
   function seqLabels(q, universe, seq) {
     return seq.map(function (v) {
@@ -361,9 +435,10 @@
     blank: ["accept", "answers", "answer", "acceptRegex"],
     code: ["acceptRegex", "accept", "answer"],
     output: ["acceptLines", "lines", "accept", "answer"],
-    order: ["answer", "correct", "answers"]
+    order: ["answer", "correct", "answers"],
+    match: ["answer", "correct", "answers"]
   };
-  var MUST_NAME = { choice: "answer", multi: "answers", blank: "accept", code: "acceptRegex", output: "acceptLines", order: "answer" };
+  var MUST_NAME = { choice: "answer", multi: "answers", blank: "accept", code: "acceptRegex", output: "acceptLines", order: "answer", match: "answer" };
 
   /* ---------- 考卷契约自检（D-13：权重和必须正好 100，不平就报出来别静默） ---------- */
   function validatePaper(exam) {
@@ -389,6 +464,22 @@
         errs.push(at + "（" + q.type + "）缺 " + (MUST_NAME[q.type] || "正确答案") + "，这题没法判分");
       }
       if ((q.type === "choice" || q.type === "multi") && !(q.options || []).length) errs.push(at + "没有 options");
+      if (q.type === "match") {
+        /* 配对题的三件事：两边都得有项、answer 得落在项里、标签不许撞车
+           （撞了就没法判断「该连哪一个」，界面上两个一样的按钮点哪个都算对） */
+        var mu = matchUniverse(q);
+        if (mu.left.length < 2 || mu.right.length < 2) errs.push(at + "（match）左边或右边不足 2 个项（左 " + mu.left.length + " / 右 " + mu.right.length + "）");
+        var wantN = q.answer && typeof q.answer === "object" ? Object.keys(q.answer).length : 0;
+        if (wantN && mu.pairs.length !== wantN) errs.push(at + "（match）answer 里 " + wantN + " 对只有 " + mu.pairs.length + " 对在 left/right 里认得出来");
+        [["left", mu.left], ["right", mu.right]].forEach(function (side) {
+          var seenL = {};
+          side[1].forEach(function (l) {
+            var key = normText(l).toLowerCase();
+            if (seenL[key]) errs.push(at + "（match）" + side[0] + " 有重复项：" + l);
+            seenL[key] = 1;
+          });
+        });
+      }
     });
     if (errs.length) return errs;
     if (sum !== 100) errs.push("各题分数相加是 " + sum + "，要求正好 100（D-13：100 分制、60 分及格，权重不平这张卷就是写坏了）");
@@ -468,6 +559,157 @@
     return result;
   }
 
+  /* ---------- 单编辑器卷（mode:"ide"）：一块编辑器 + 逐条判定 ----------
+   *
+   * 为什么要这一层：C++ 在浏览器里跑不动，但用户要的是 Python 考场那个形状 —— 题面就是文件
+   * 顶部那几行注释，一整块编辑器把这份程序写到底，判定清单逐条给 ✓/✗。上一条「每题一枚小编辑器」
+   * 把一件事拆成 4 个小格子，手感根本不是同一间机房。
+   *
+   * 三条判分规矩（都是这块形状独有的，逐题卷没有）：
+   *   1) 分界与 Python 同一条线：第一条独行的 "//"（C 风格注释）就是题面与代码的分界。
+   *      题面整块删掉就没有这条线，那时整份 buffer 都算代码 —— 与 exam-ui.js 的 splitAt 同语义。
+   *   2) 匹配之前先剥注释：条件是按「代码里有没有这个写法」判的，把条件原文抄进注释不该得分。
+   *      剥的时候认字符串与字符字面量（"http://x" 里的 // 不是注释），并把注释那几个字符换成空格，
+   *      行数和列位一概不动 —— 报错要按行号跳，长度变了就跳错格。
+   *   3) 少数条件考的不是程序本体（写编译命令、把观察到的报错抄成注释）。这类题写
+   *      acceptOn:"buffer"，改为在整份 buffer（含题面之外的注释）上匹配 —— 但那是出题人明说的
+   *      「就考你写不写得出这一行注释」，不是把规则松开。
+   */
+  var IDE_SPLIT = /^\s*(\/\/|#)\s*$/;    /* C++ 用 //，Python 用 #：一条正则两边认 */
+  function ideCodeLines(buffer) {
+    var ls = String(buffer == null ? "" : buffer).replace(/\r/g, "").split("\n"), k;
+    for (k = 0; k < ls.length; k++) if (IDE_SPLIT.test(ls[k])) return ls.slice(k + 1);
+    return ls;
+  }
+  function ideTaskLines(buffer) {
+    var ls = String(buffer == null ? "" : buffer).replace(/\r/g, "").split("\n"), k;
+    for (k = 0; k < ls.length; k++) if (IDE_SPLIT.test(ls[k])) return k + 1;
+    return 0;
+  }
+  /* 剥 // 与 块注释：状态机扫，字符串里的 // 不算注释。行结构一字不动（注释字符→空格）。 */
+  function stripComments(src) {
+    var s = String(src == null ? "" : src), out = "", i = 0, n = s.length;
+    while (i < n) {
+      var c = s.charAt(i), d = s.charAt(i + 1);
+      if (c === '"' || c === "'") {                       /* 字面量原样吐，里面的 // 与 /* 都不理 */
+        var q = c; out += c; i++;
+        while (i < n) {
+          if (s.charAt(i) === "\\") { out += s.substr(i, 2); i += 2; continue; }
+          out += s.charAt(i);
+          if (s.charAt(i) === q) { i++; break; }
+          if (s.charAt(i) === "\n" && q === "'") { i++; break; }   /* 单引号没闭合就断在这一行，别把整篇吃进去 */
+          i++;
+        }
+        continue;
+      }
+      if (c === "/" && d === "/") {
+        while (i < n && s.charAt(i) !== "\n") { out += " "; i++; }
+        continue;
+      }
+      if (c === "/" && d === "*") {
+        var e = s.indexOf("*/", i + 2); e = e < 0 ? n : e + 2;
+        for (; i < e; i++) out += (s.charAt(i) === "\n" ? "\n" : " ");
+        continue;
+      }
+      out += c; i++;
+    }
+    return out;
+  }
+  /* 一场的条件数与权重（单编辑器卷用 questions[]，每条就是一「条件」：字段沿用逐题卷，
+     这样 TYPES.code、复盘、coversTask 对账都不用再写第二份） */
+  function ideChecks(exam) {
+    return [].concat((exam && exam.questions) || []);
+  }
+  /* 空骨架 / 只抄题面 交卷不该得分：starter 自己必须过不了线 */
+  function ideStarterFails(exam) {
+    var r = gradeIde(exam, (exam && exam.starter) || "", { blankOk: true });
+    return { failed: r.score < ((exam && exam.pass != null) ? Number(exam.pass) : 60), score: r.score };
+  }
+  /* 判分入口：整份 buffer 进来，逐条条件走 TYPES.code（它只按关键写法找，不比源码形状） */
+  function gradeIde(exam, buffer, opt) {
+    opt = opt || {};
+    var qs = ideChecks(exam);
+    /* 分界之后的那一段才是读者自己写的东西：剥了注释的是「代码」，没剥的是「代码 + 读者的注释」。
+       题面那几行注释（包括它自己写的「条件 N」）绝不进匹配 —— 否则把题面留在文件里就能白拿分。 */
+    var mine = ideCodeLines(buffer).join("\n");
+    /* buffer 档还要把「题面自己那几种行」剔掉：条件 N / 任务题目 / 知识点 / 提示 / 第 N 课考试。
+       不剔就有个洞 —— 读者把整块题面留着（甚至把独行 // 那条分界删掉），编译命令那种
+       buffer 条件就会拿题面原文判过。剔完之后，能得分的只有他自己写下的那几行。 */
+    var whole = mine.split("\n").filter(function (l) {
+      return !/^\s*(\/\/|#)\s*(条件\d+|任务题目|知识点|提示|第\s*\d+\s*课)/.test(l);
+    }).join("\n");
+    var code = stripComments(mine);
+    var errs = validateIde(exam);
+    var passLine = (exam && exam.pass != null) ? Number(exam.pass) : 60;
+    var why = buildWhy(exam);
+    var items = qs.map(function (q, i) {
+      var weight = q && Number(q.score) >= 0 ? Number(q.score) : 0;
+      var target = (q && q.acceptOn === "buffer") ? whole : code;
+      var r;
+      try {
+        r = TYPES.code(q, opt.blankOk ? "" : target);
+      } catch (e) {
+        r = { pts: 0, mark: "no", your: NO_ANSWER, right: "—", saw: "这条判定报错了：" + (e && e.message || e) };
+      }
+      return {
+        id: q && q.id != null ? q.id : "q" + (i + 1),
+        index: i, type: "code",
+        label: (q && q.stem) || "（没有条件说明）",
+        stem: (q && q.stem) || "（没有条件说明）",
+        weight: weight, pts: Math.max(0, Math.min(weight, Math.round(r.pts || 0))),
+        ok: r.mark === "ok", mark: r.mark, markText: r.mark === "ok" ? "对" : r.mark === "half" ? "半对" : "错",
+        skipped: opt.blankOk ? true : isBlank(target),
+        yourAnswer: r.your, rightAnswer: r.right, saw: r.saw,
+        why: (q && q.id != null && why[q.id]) || (q && q.why) || "",
+        coversTask: q ? q.coversTask : null
+      };
+    });
+    var got = items.reduce(function (a, x) { return a + x.pts; }, 0);
+    var full = items.reduce(function (a, x) { return a + x.weight; }, 0);
+    var valid = errs.length === 0;
+    return {
+      cid: exam && exam.cid, kind: (exam && exam.kind) || "paper", mode: "ide",
+      title: exam && exam.title, score: Math.round(got), full: full, got: got,
+      passLine: passLine, passed: valid && Math.round(got) >= passLine,
+      valid: valid, errors: errs, weightSum: full, weightOk: full === 100,
+      answered: items.filter(function (x) { return !x.skipped; }).length, total: items.length,
+      counts: { ok: items.filter(function (x) { return x.mark === "ok"; }).length, no: items.filter(function (x) { return x.mark === "no"; }).length },
+      items: items, reviews: items, checks: items
+    };
+  }
+  /* 契约：单编辑器卷只许 code 条件，3–6 条，条条给 acceptRegex，权重和正好 100 */
+  function validateIde(exam) {
+    var errs = [];
+    if (!exam || typeof exam !== "object") return ["考卷不是一个对象"];
+    var qs = ideChecks(exam);
+    if (!qs.length) errs.push("这张卷子一条条件都没有");
+    var bad = qs.filter(function (q) { return !q || q.type !== "code"; });
+    if (bad.length) {
+      var kinds = {};
+      bad.forEach(function (q) { kinds[q && q.type] = 1; });
+      errs.push("单编辑器卷里混进 " + bad.length + " 条不是 code 的条件（" +
+        Object.keys(kinds).join("/") + "）—— 一块编辑器判不了选择型题");
+    }
+    if (qs.length < 3 || qs.length > 6) errs.push("单编辑器卷 " + qs.length + " 条条件，要求 3–6 条");
+    var sum = 0, seen = {};
+    qs.forEach(function (q, i) {
+      var at = "条件 " + (i + 1) + (q && q.id ? "（" + q.id + "）" : "");
+      if (!q || typeof q !== "object") { errs.push(at + "不是一个对象"); return; }
+      if (q.id == null) errs.push(at + "没有 id");
+      else if (seen[q.id]) errs.push(at + "的 id 与前面重复：" + q.id); else seen[q.id] = 1;
+      if (!q.stem) errs.push(at + "没有 stem（题面那一行 # 条件 拿什么给读者看）");
+      if (![].concat(q.acceptRegex || []).length) errs.push(at + "没给 acceptRegex —— 单编辑器卷的判定只有这一条路");
+      if (!q.sample) errs.push(at + "没给 sample —— 判错时复盘要给人看参考写法，不能甩裸正则");
+      var sc = Number(q.score);
+      if (!(sc >= 0)) errs.push(at + "没有合法的 score（现在是 " + JSON.stringify(q.score) + "）"); else sum += sc;
+      if (q.acceptOn != null && q.acceptOn !== "code" && q.acceptOn !== "buffer")
+        errs.push(at + "的 acceptOn 是 " + JSON.stringify(q.acceptOn) + "，只认 code / buffer");
+    });
+    if (errs.length) return errs;
+    if (sum !== 100) errs.push("各条件分数相加是 " + sum + "，要求正好 100（D-13）");
+    return errs;
+  }
+
   /* explain: [{id:"q1", why:"…"}] 也接受 {q1:"…"} 这种表 */
   function buildWhy(exam) {
     var out = {};
@@ -491,6 +733,9 @@
   return {
     gradePaper: gradePaper, validatePaper: validatePaper, TYPES: TYPES,
     KINDS: Object.keys(TYPES),
+    /* 单编辑器卷（mode:"ide"）：C++ 两门课从 2026-10-15 起全部走这一形状 */
+    gradeIde: gradeIde, validateIde: validateIde, ideStarterFails: ideStarterFails,
+    ideCodeLines: ideCodeLines, ideTaskLines: ideTaskLines, stripComments: stripComments,
     normText: normText, fold: fold, lines: lines, looseEq: looseEq, textEq: textEq,
     stripWrap: stripWrap, pickedSet: pickedSet, seqOf: seqOf, quote: quote
   };

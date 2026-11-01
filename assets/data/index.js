@@ -1,8 +1,10 @@
 /* 喵站 · 站点目录（首屏唯一要读的教程数据）· 由 dev/tools/gen-index.js 生成，别手改
  *
- * 这里只有：每门课的元信息、每章的 id 与标题、哪些章排了考、点开这门课要注入哪些脚本。
- * 正文一块都不在 —— 所以改任何一课的正文，都要重跑生成器，标题与章数才会同步到这里。
- * 生成时间：2026-10-13 10:51
+ * 这里只有：每门课的元信息、每章的 id 与标题、哪些章排了考、
+ * 以及分层加载要的两张表 —— boot（点开这门课任何一章都必拉的骨架）与
+ * chunks（每一章的正文落在哪个文件，由「后写的顶掉先写的」算出来的赢家）。
+ * 正文一块都不在 —— 所以改任何一课的正文，都要重跑生成器，标题、章数与这张映射才会同步。
+ * 生成时间：2026-10-26 23:53
  */
 window.MIAO_INDEX = {
  "tutorials": [
@@ -11,6 +13,7 @@ window.MIAO_INDEX = {
    "source": "MIAO_PY",
    "engine": "code",
    "mount": "",
+   "assemble": "MIAO_PY_ASSEMBLE",
    "title": "Python 入门",
    "intro": "45 课从零学完 Python 基础：每课都讲原理、给能跑的演示、列常见坑、留课后任务。附三节准备课讲清解释器与装环境，正文全部可直接运行验证。",
    "cat": "python",
@@ -268,19 +271,77 @@ window.MIAO_INDEX = {
     "l45"
    ],
    "keywords": [],
-   "files": [
-    "assets/data/py/legacy.js",
-    "assets/data/py/p1.js",
-    "assets/data/py/p2.js",
-    "assets/data/py/p3.js",
-    "assets/data/py/p4.js",
-    "assets/data/py/p5.js",
-    "assets/data/py/p6.js",
-    "assets/data/py/p7.js",
-    "assets/data/py/p8.js",
-    "assets/data/py/p9.js",
+   "boot": [
     "assets/data/py-data.js"
    ],
+   "chunks": {
+    "assets/data/py/p1.js": [
+     "s01",
+     "s02",
+     "s03",
+     "l01",
+     "l02",
+     "l03",
+     "l04",
+     "l05",
+     "l06"
+    ],
+    "assets/data/py/p2.js": [
+     "l07",
+     "l08",
+     "l09",
+     "l10",
+     "l11",
+     "l12",
+     "l13"
+    ],
+    "assets/data/py/p3.js": [
+     "l14",
+     "l15",
+     "l16",
+     "l17"
+    ],
+    "assets/data/py/p4.js": [
+     "l18",
+     "l19",
+     "l20",
+     "l21"
+    ],
+    "assets/data/py/p5.js": [
+     "l22",
+     "l23",
+     "l24",
+     "l25"
+    ],
+    "assets/data/py/p6.js": [
+     "l35",
+     "l36",
+     "l37",
+     "l38",
+     "l39",
+     "l40",
+     "l41"
+    ],
+    "assets/data/py/p7.js": [
+     "l42",
+     "l43",
+     "l44",
+     "l45"
+    ],
+    "assets/data/py/p8.js": [
+     "l26",
+     "l27",
+     "l28",
+     "l29"
+    ],
+    "assets/data/py/p9.js": [
+     "l30",
+     "l31",
+     "l32",
+     "l33",
+     "l34"
+    ]
+   },
    "examFiles": [
     "assets/data/py-exam-data.js",
     "assets/data/exam-parts/l04-l10.js",
@@ -289,15 +350,14 @@ window.MIAO_INDEX = {
     "assets/data/exam-parts/l25-l31.js",
     "assets/data/exam-parts/l32-l38.js",
     "assets/data/exam-parts/l39-l45.js"
-   ],
-   "bytes": 842816,
-   "examBytes": 99691
+   ]
   },
   {
    "id": "english",
    "source": "MIAO_EN",
    "engine": "en",
    "mount": "",
+   "assemble": "",
    "title": "英语发音入门：26 字母 + 48 音标",
    "intro": "26 个字母、48 个国际音标，每个都能直接听发音。配套卡片帮你把字母和音标一次记牢，打好英语拼读的地基喵～",
    "cat": "英语",
@@ -334,22 +394,22 @@ window.MIAO_INDEX = {
     "en-c03"
    ],
    "keywords": [],
-   "files": [
+   "boot": [
     "assets/data/en-data.js"
    ],
+   "chunks": {},
    "examFiles": [
     "assets/data/en-exam-data.js"
-   ],
-   "bytes": 13909,
-   "examBytes": 2039
+   ]
   },
   {
    "id": "enwords",
    "source": "MIAO_ENW",
    "engine": "enword",
    "mount": "",
-   "title": "英语入门：20 课 200 个基础单词",
-   "intro": "从 hello 到 have，20 个主题各 10 个真正入门要用的词。每个词都有读音、音标、词性、中文和一句常用短语，点一下就听；每课一场小考，最后一场 200 词的结课大考。",
+   "assemble": "",
+   "title": "英语入门：21 课 257 个基础单词",
+   "intro": "从 hello 到 code，21 个主题把真正入门要用的词一次排开。每个词都有读音、音标、词性、中文和一句常用短语，点一下就听；每课一场小考，最后一场 257 词的结课大考。",
    "cat": "英语",
    "diff": "入门",
    "tags": [
@@ -363,7 +423,7 @@ window.MIAO_INDEX = {
    "thumb": "",
    "hero": "",
    "updated": "2026-10-09",
-   "chaps": 21,
+   "chaps": 22,
    "chapters": [
     {
      "id": "ew-l01",
@@ -447,7 +507,11 @@ window.MIAO_INDEX = {
     },
     {
      "id": "ew-l21",
-     "title": "第 21 课 · 结课总复习与结课大考"
+     "title": "第 21 课 · 编程英语（C++ 与 Python）"
+    },
+    {
+     "id": "ew-l22",
+     "title": "第 22 课 · 结课总复习与结课大考"
     }
    ],
    "examIds": [
@@ -471,7 +535,8 @@ window.MIAO_INDEX = {
     "ew-l18",
     "ew-l19",
     "ew-l20",
-    "ew-l21"
+    "ew-l21",
+    "ew-l22"
    ],
    "keywords": [
     "hello",
@@ -484,6 +549,11 @@ window.MIAO_INDEX = {
     "OK",
     "welcome",
     "morning",
+    "everyone",
+    "ticket",
+    "late",
+    "know",
+    "China",
     "I",
     "you",
     "he",
@@ -494,6 +564,9 @@ window.MIAO_INDEX = {
     "my",
     "your",
     "friend",
+    "kind",
+    "ready",
+    "name",
     "family",
     "father",
     "mother",
@@ -504,6 +577,7 @@ window.MIAO_INDEX = {
     "grandpa",
     "grandma",
     "parents",
+    "little",
     "one",
     "two",
     "three",
@@ -514,6 +588,9 @@ window.MIAO_INDEX = {
     "eight",
     "nine",
     "ten",
+    "cup",
+    "time",
+    "yuan",
     "eleven",
     "twelve",
     "thirteen",
@@ -524,6 +601,9 @@ window.MIAO_INDEX = {
     "eighteen",
     "nineteen",
     "twenty",
+    "city",
+    "rule",
+    "question",
     "red",
     "orange",
     "yellow",
@@ -534,6 +614,8 @@ window.MIAO_INDEX = {
     "black",
     "brown",
     "pink",
+    "star",
+    "sky",
     "day",
     "week",
     "month",
@@ -544,6 +626,10 @@ window.MIAO_INDEX = {
     "yesterday",
     "tomorrow",
     "now",
+    "next",
+    "later",
+    "before",
+    "right",
     "what",
     "who",
     "where",
@@ -564,6 +650,8 @@ window.MIAO_INDEX = {
     "nice",
     "new",
     "old",
+    "way",
+    "boy",
     "happy",
     "sad",
     "tired",
@@ -574,6 +662,7 @@ window.MIAO_INDEX = {
     "sick",
     "angry",
     "well",
+    "story",
     "weather",
     "season",
     "spring",
@@ -584,6 +673,10 @@ window.MIAO_INDEX = {
     "snow",
     "wind",
     "cloud",
+    "leaf",
+    "cold",
+    "heavy",
+    "strong",
     "school",
     "classroom",
     "teacher",
@@ -594,6 +687,8 @@ window.MIAO_INDEX = {
     "blackboard",
     "desk",
     "chair",
+    "English",
+    "first",
     "book",
     "pen",
     "pencil",
@@ -604,6 +699,7 @@ window.MIAO_INDEX = {
     "map",
     "dictionary",
     "card",
+    "piece",
     "head",
     "face",
     "eye",
@@ -614,6 +710,9 @@ window.MIAO_INDEX = {
     "hand",
     "foot",
     "hair",
+    "wash",
+    "open",
+    "left",
     "rice",
     "bread",
     "meat",
@@ -624,6 +723,9 @@ window.MIAO_INDEX = {
     "tea",
     "coffee",
     "sugar",
+    "bowl",
+    "some",
+    "glass",
     "apple",
     "banana",
     "grape",
@@ -634,6 +736,8 @@ window.MIAO_INDEX = {
     "tomato",
     "carrot",
     "vegetable",
+    "bunch",
+    "sweet",
     "cat",
     "dog",
     "pig",
@@ -654,6 +758,8 @@ window.MIAO_INDEX = {
     "room",
     "door",
     "window",
+    "warm",
+    "near",
     "go",
     "come",
     "eat",
@@ -664,6 +770,9 @@ window.MIAO_INDEX = {
     "run",
     "play",
     "help",
+    "down",
+    "fast",
+    "game",
     "read",
     "write",
     "listen",
@@ -673,22 +782,78 @@ window.MIAO_INDEX = {
     "say",
     "want",
     "like",
-    "have"
+    "have",
+    "again",
+    "code",
+    "program",
+    "print",
+    "input",
+    "output",
+    "error",
+    "bug",
+    "file",
+    "import",
+    "include",
+    "fix",
+    "tool"
    ],
-   "files": [
+   "boot": [
     "assets/data/enwords-data.js"
    ],
+   "chunks": {},
    "examFiles": [
     "assets/data/enword-exam-data.js"
+   ]
+  },
+  {
+   "id": "git",
+   "source": "MIAO_GIT",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "Git 入门",
+   "intro": "从「版本库到底存了什么」讲到分支合并：三课讲清三个区、四种撤回、一张便利贴式的分支。每课都有能当场照敲的命令，坑单列在明面上。",
+   "cat": "git",
+   "diff": "入门",
+   "tags": [
+    "git",
+    "版本库",
+    "命令行"
    ],
-   "bytes": 172234,
-   "examBytes": 14569
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/git.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-21",
+   "chaps": 3,
+   "chapters": [
+    {
+     "id": "g01",
+     "title": "第 1 课 · 三个区：Git 到底把东西存在哪"
+    },
+    {
+     "id": "g02",
+     "title": "第 2 课 · 撤回：先看清 diff，再决定动哪个区"
+    },
+    {
+     "id": "g03",
+     "title": "第 3 课 · 分支：一张写着「这条线停在哪」的便利贴"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/git-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
   },
   {
    "id": "genai",
    "source": "MIAO_MS_GENAI",
    "engine": "",
    "mount": "MIAO_MS_MOUNT",
+   "assemble": "",
    "title": "生成式 AI 入门（译自 Microsoft · MIT）",
    "intro": "微软官方写的 22 课生成式 AI 入门课，MIT 授权、本站译成中文。从「大模型到底在干什么」讲起，一路到提示工程、向量与 RAG、微调、Agent、元提示、设计原则与落地应用。每课自带可跑的 notebook 与代码。",
    "cat": "大模型",
@@ -797,41 +962,86 @@ window.MIAO_INDEX = {
    ],
    "examIds": [],
    "keywords": [],
-   "files": [
+   "boot": [
     "assets/data/ms-data.js",
-    "assets/data/ms/genai-c01.js",
-    "assets/data/ms/genai-c02.js",
-    "assets/data/ms/genai-c03.js",
-    "assets/data/ms/genai-c04.js",
-    "assets/data/ms/genai-c05.js",
-    "assets/data/ms/genai-c06.js",
-    "assets/data/ms/genai-c07.js",
-    "assets/data/ms/genai-c08.js",
-    "assets/data/ms/genai-c09.js",
-    "assets/data/ms/genai-c10.js",
-    "assets/data/ms/genai-c11.js",
-    "assets/data/ms/genai-c12.js",
-    "assets/data/ms/genai-c13.js",
-    "assets/data/ms/genai-c14.js",
-    "assets/data/ms/genai-c15.js",
-    "assets/data/ms/genai-c16.js",
-    "assets/data/ms/genai-c17.js",
-    "assets/data/ms/genai-c18.js",
-    "assets/data/ms/genai-c19.js",
-    "assets/data/ms/genai-c20.js",
-    "assets/data/ms/genai-c21.js",
-    "assets/data/ms/genai-c22.js",
     "assets/data/ms-bodies.js"
    ],
-   "examFiles": [],
-   "bytes": 249631,
-   "examBytes": 0
+   "chunks": {
+    "assets/data/ms/genai-c01.js": [
+     "genai-c01"
+    ],
+    "assets/data/ms/genai-c02.js": [
+     "genai-c02"
+    ],
+    "assets/data/ms/genai-c03.js": [
+     "genai-c03"
+    ],
+    "assets/data/ms/genai-c04.js": [
+     "genai-c04"
+    ],
+    "assets/data/ms/genai-c05.js": [
+     "genai-c05"
+    ],
+    "assets/data/ms/genai-c06.js": [
+     "genai-c06"
+    ],
+    "assets/data/ms/genai-c07.js": [
+     "genai-c07"
+    ],
+    "assets/data/ms/genai-c08.js": [
+     "genai-c08"
+    ],
+    "assets/data/ms/genai-c09.js": [
+     "genai-c09"
+    ],
+    "assets/data/ms/genai-c10.js": [
+     "genai-c10"
+    ],
+    "assets/data/ms/genai-c11.js": [
+     "genai-c11"
+    ],
+    "assets/data/ms/genai-c12.js": [
+     "genai-c12"
+    ],
+    "assets/data/ms/genai-c13.js": [
+     "genai-c13"
+    ],
+    "assets/data/ms/genai-c14.js": [
+     "genai-c14"
+    ],
+    "assets/data/ms/genai-c15.js": [
+     "genai-c15"
+    ],
+    "assets/data/ms/genai-c16.js": [
+     "genai-c16"
+    ],
+    "assets/data/ms/genai-c17.js": [
+     "genai-c17"
+    ],
+    "assets/data/ms/genai-c18.js": [
+     "genai-c18"
+    ],
+    "assets/data/ms/genai-c19.js": [
+     "genai-c19"
+    ],
+    "assets/data/ms/genai-c20.js": [
+     "genai-c20"
+    ],
+    "assets/data/ms/genai-c21.js": [
+     "genai-c21"
+    ],
+    "assets/data/ms/genai-c22.js": [
+     "genai-c22"
+    ]
+   },
+   "examFiles": []
   },
   {
    "id": "ml",
    "source": "MIAO_MS_ML",
    "engine": "",
    "mount": "MIAO_MS_MOUNT",
+   "assemble": "",
    "title": "机器学习入门（译自 Microsoft · MIT）",
    "intro": "微软官方 9 组 · 每组 3 课的机器学习入门，MIT 授权、本站译成中文。从回归、分类、聚类一路做到 NLP、时间序列与强化学习，每组都带可跑的 notebook，还专门有一组讲真实项目里怎么落地。",
    "cat": "大模型",
@@ -961,46 +1171,101 @@ window.MIAO_INDEX = {
    ],
    "examIds": [],
    "keywords": [],
-   "files": [
+   "boot": [
     "assets/data/ms-data.js",
-    "assets/data/ms/ml-c01.js",
-    "assets/data/ms/ml-c02.js",
-    "assets/data/ms/ml-c03.js",
-    "assets/data/ms/ml-c04.js",
-    "assets/data/ms/ml-c05.js",
-    "assets/data/ms/ml-c06.js",
-    "assets/data/ms/ml-c07.js",
-    "assets/data/ms/ml-c08.js",
-    "assets/data/ms/ml-c09.js",
-    "assets/data/ms/ml-c10.js",
-    "assets/data/ms/ml-c11.js",
-    "assets/data/ms/ml-c12.js",
-    "assets/data/ms/ml-c13.js",
-    "assets/data/ms/ml-c14.js",
-    "assets/data/ms/ml-c15.js",
-    "assets/data/ms/ml-c16.js",
-    "assets/data/ms/ml-c17.js",
-    "assets/data/ms/ml-c18.js",
-    "assets/data/ms/ml-c19.js",
-    "assets/data/ms/ml-c20.js",
-    "assets/data/ms/ml-c21.js",
-    "assets/data/ms/ml-c22.js",
-    "assets/data/ms/ml-c23.js",
-    "assets/data/ms/ml-c24.js",
-    "assets/data/ms/ml-c25.js",
-    "assets/data/ms/ml-c26.js",
-    "assets/data/ms/ml-c27.js",
     "assets/data/ms-bodies.js"
    ],
-   "examFiles": [],
-   "bytes": 309305,
-   "examBytes": 0
+   "chunks": {
+    "assets/data/ms/ml-c01.js": [
+     "ml-c01"
+    ],
+    "assets/data/ms/ml-c02.js": [
+     "ml-c02"
+    ],
+    "assets/data/ms/ml-c03.js": [
+     "ml-c03"
+    ],
+    "assets/data/ms/ml-c04.js": [
+     "ml-c04"
+    ],
+    "assets/data/ms/ml-c05.js": [
+     "ml-c05"
+    ],
+    "assets/data/ms/ml-c06.js": [
+     "ml-c06"
+    ],
+    "assets/data/ms/ml-c07.js": [
+     "ml-c07"
+    ],
+    "assets/data/ms/ml-c08.js": [
+     "ml-c08"
+    ],
+    "assets/data/ms/ml-c09.js": [
+     "ml-c09"
+    ],
+    "assets/data/ms/ml-c10.js": [
+     "ml-c10"
+    ],
+    "assets/data/ms/ml-c11.js": [
+     "ml-c11"
+    ],
+    "assets/data/ms/ml-c12.js": [
+     "ml-c12"
+    ],
+    "assets/data/ms/ml-c13.js": [
+     "ml-c13"
+    ],
+    "assets/data/ms/ml-c14.js": [
+     "ml-c14"
+    ],
+    "assets/data/ms/ml-c15.js": [
+     "ml-c15"
+    ],
+    "assets/data/ms/ml-c16.js": [
+     "ml-c16"
+    ],
+    "assets/data/ms/ml-c17.js": [
+     "ml-c17"
+    ],
+    "assets/data/ms/ml-c18.js": [
+     "ml-c18"
+    ],
+    "assets/data/ms/ml-c19.js": [
+     "ml-c19"
+    ],
+    "assets/data/ms/ml-c20.js": [
+     "ml-c20"
+    ],
+    "assets/data/ms/ml-c21.js": [
+     "ml-c21"
+    ],
+    "assets/data/ms/ml-c22.js": [
+     "ml-c22"
+    ],
+    "assets/data/ms/ml-c23.js": [
+     "ml-c23"
+    ],
+    "assets/data/ms/ml-c24.js": [
+     "ml-c24"
+    ],
+    "assets/data/ms/ml-c25.js": [
+     "ml-c25"
+    ],
+    "assets/data/ms/ml-c26.js": [
+     "ml-c26"
+    ],
+    "assets/data/ms/ml-c27.js": [
+     "ml-c27"
+    ]
+   },
+   "examFiles": []
   },
   {
    "id": "webdev",
    "source": "MIAO_MS_WEBDEV",
    "engine": "",
    "mount": "MIAO_MS_MOUNT",
+   "assemble": "",
    "title": "Web 开发入门（译自 Microsoft · MIT）",
    "intro": "微软官方 10 组 · 每组 2–3 课的 Web 开发入门，MIT 授权、本站译成中文。HTML/CSS/JS 打底，后面连着做打字小游戏、浏览器扩展、太空游戏、银行页面、代码编辑器，最后一组是接大模型的旅行生成器项目。",
    "cat": "计算机基础",
@@ -1129,46 +1394,101 @@ window.MIAO_INDEX = {
    ],
    "examIds": [],
    "keywords": [],
-   "files": [
+   "boot": [
     "assets/data/ms-data.js",
-    "assets/data/ms/webdev-c01.js",
-    "assets/data/ms/webdev-c02.js",
-    "assets/data/ms/webdev-c03.js",
-    "assets/data/ms/webdev-c04.js",
-    "assets/data/ms/webdev-c05.js",
-    "assets/data/ms/webdev-c06.js",
-    "assets/data/ms/webdev-c07.js",
-    "assets/data/ms/webdev-c08.js",
-    "assets/data/ms/webdev-c09.js",
-    "assets/data/ms/webdev-c10.js",
-    "assets/data/ms/webdev-c11.js",
-    "assets/data/ms/webdev-c12.js",
-    "assets/data/ms/webdev-c13.js",
-    "assets/data/ms/webdev-c14.js",
-    "assets/data/ms/webdev-c15.js",
-    "assets/data/ms/webdev-c16.js",
-    "assets/data/ms/webdev-c17.js",
-    "assets/data/ms/webdev-c18.js",
-    "assets/data/ms/webdev-c19.js",
-    "assets/data/ms/webdev-c20.js",
-    "assets/data/ms/webdev-c21.js",
-    "assets/data/ms/webdev-c22.js",
-    "assets/data/ms/webdev-c23.js",
-    "assets/data/ms/webdev-c24.js",
-    "assets/data/ms/webdev-c25.js",
-    "assets/data/ms/webdev-c26.js",
-    "assets/data/ms/webdev-c27.js",
     "assets/data/ms-bodies.js"
    ],
-   "examFiles": [],
-   "bytes": 323658,
-   "examBytes": 0
+   "chunks": {
+    "assets/data/ms/webdev-c01.js": [
+     "webdev-c01"
+    ],
+    "assets/data/ms/webdev-c02.js": [
+     "webdev-c02"
+    ],
+    "assets/data/ms/webdev-c03.js": [
+     "webdev-c03"
+    ],
+    "assets/data/ms/webdev-c04.js": [
+     "webdev-c04"
+    ],
+    "assets/data/ms/webdev-c05.js": [
+     "webdev-c05"
+    ],
+    "assets/data/ms/webdev-c06.js": [
+     "webdev-c06"
+    ],
+    "assets/data/ms/webdev-c07.js": [
+     "webdev-c07"
+    ],
+    "assets/data/ms/webdev-c08.js": [
+     "webdev-c08"
+    ],
+    "assets/data/ms/webdev-c09.js": [
+     "webdev-c09"
+    ],
+    "assets/data/ms/webdev-c10.js": [
+     "webdev-c10"
+    ],
+    "assets/data/ms/webdev-c11.js": [
+     "webdev-c11"
+    ],
+    "assets/data/ms/webdev-c12.js": [
+     "webdev-c12"
+    ],
+    "assets/data/ms/webdev-c13.js": [
+     "webdev-c13"
+    ],
+    "assets/data/ms/webdev-c14.js": [
+     "webdev-c14"
+    ],
+    "assets/data/ms/webdev-c15.js": [
+     "webdev-c15"
+    ],
+    "assets/data/ms/webdev-c16.js": [
+     "webdev-c16"
+    ],
+    "assets/data/ms/webdev-c17.js": [
+     "webdev-c17"
+    ],
+    "assets/data/ms/webdev-c18.js": [
+     "webdev-c18"
+    ],
+    "assets/data/ms/webdev-c19.js": [
+     "webdev-c19"
+    ],
+    "assets/data/ms/webdev-c20.js": [
+     "webdev-c20"
+    ],
+    "assets/data/ms/webdev-c21.js": [
+     "webdev-c21"
+    ],
+    "assets/data/ms/webdev-c22.js": [
+     "webdev-c22"
+    ],
+    "assets/data/ms/webdev-c23.js": [
+     "webdev-c23"
+    ],
+    "assets/data/ms/webdev-c24.js": [
+     "webdev-c24"
+    ],
+    "assets/data/ms/webdev-c25.js": [
+     "webdev-c25"
+    ],
+    "assets/data/ms/webdev-c26.js": [
+     "webdev-c26"
+    ],
+    "assets/data/ms/webdev-c27.js": [
+     "webdev-c27"
+    ]
+   },
+   "examFiles": []
   },
   {
    "id": "agents",
    "source": "MIAO_MS_AGENTS",
    "engine": "",
    "mount": "MIAO_MS_MOUNT",
+   "assemble": "",
    "title": "AI Agent 入门（译自 Microsoft · MIT）",
    "intro": "微软官方 19 课 AI Agent 入门，MIT 授权、本站译成中文。讲清 agent 与普通对话的区别、任务描述与规划、对话方式、信任来源、知识检索、多 agent 协作、工作流、可观测性，最后一课是真实的旅行规划 agent，末尾还有一课专门讲 agent 的安全。",
    "cat": "Agent",
@@ -1265,38 +1585,77 @@ window.MIAO_INDEX = {
    ],
    "examIds": [],
    "keywords": [],
-   "files": [
+   "boot": [
     "assets/data/ms-data.js",
-    "assets/data/ms/agents-c01.js",
-    "assets/data/ms/agents-c02.js",
-    "assets/data/ms/agents-c03.js",
-    "assets/data/ms/agents-c04.js",
-    "assets/data/ms/agents-c05.js",
-    "assets/data/ms/agents-c06.js",
-    "assets/data/ms/agents-c07.js",
-    "assets/data/ms/agents-c08.js",
-    "assets/data/ms/agents-c09.js",
-    "assets/data/ms/agents-c10.js",
-    "assets/data/ms/agents-c11.js",
-    "assets/data/ms/agents-c12.js",
-    "assets/data/ms/agents-c13.js",
-    "assets/data/ms/agents-c14.js",
-    "assets/data/ms/agents-c15.js",
-    "assets/data/ms/agents-c16.js",
-    "assets/data/ms/agents-c17.js",
-    "assets/data/ms/agents-c18.js",
-    "assets/data/ms/agents-c19.js",
     "assets/data/ms-bodies.js"
    ],
-   "examFiles": [],
-   "bytes": 245905,
-   "examBytes": 0
+   "chunks": {
+    "assets/data/ms/agents-c01.js": [
+     "agents-c01"
+    ],
+    "assets/data/ms/agents-c02.js": [
+     "agents-c02"
+    ],
+    "assets/data/ms/agents-c03.js": [
+     "agents-c03"
+    ],
+    "assets/data/ms/agents-c04.js": [
+     "agents-c04"
+    ],
+    "assets/data/ms/agents-c05.js": [
+     "agents-c05"
+    ],
+    "assets/data/ms/agents-c06.js": [
+     "agents-c06"
+    ],
+    "assets/data/ms/agents-c07.js": [
+     "agents-c07"
+    ],
+    "assets/data/ms/agents-c08.js": [
+     "agents-c08"
+    ],
+    "assets/data/ms/agents-c09.js": [
+     "agents-c09"
+    ],
+    "assets/data/ms/agents-c10.js": [
+     "agents-c10"
+    ],
+    "assets/data/ms/agents-c11.js": [
+     "agents-c11"
+    ],
+    "assets/data/ms/agents-c12.js": [
+     "agents-c12"
+    ],
+    "assets/data/ms/agents-c13.js": [
+     "agents-c13"
+    ],
+    "assets/data/ms/agents-c14.js": [
+     "agents-c14"
+    ],
+    "assets/data/ms/agents-c15.js": [
+     "agents-c15"
+    ],
+    "assets/data/ms/agents-c16.js": [
+     "agents-c16"
+    ],
+    "assets/data/ms/agents-c17.js": [
+     "agents-c17"
+    ],
+    "assets/data/ms/agents-c18.js": [
+     "agents-c18"
+    ],
+    "assets/data/ms/agents-c19.js": [
+     "agents-c19"
+    ]
+   },
+   "examFiles": []
   },
   {
    "id": "cpp",
    "source": "MIAO_CPP",
    "engine": "paper",
    "mount": "",
+   "assemble": "MIAO_CPP_ASSEMBLE",
    "title": "C++ 入门",
    "intro": "从第一行 main() 走到能独立写出几百行的小程序：现代 C++（C++23）的 81 节必修课。每一课都从他的源稿出发，讲机制、带演示、有常见坑；课末考试过关这一课才算学完。",
    "cat": "C++",
@@ -1734,30 +2093,135 @@ window.MIAO_INDEX = {
     "c81"
    ],
    "keywords": [],
-   "files": [
-    "assets/data/cpp/legacy.js",
-    "assets/data/cpp/p00.js",
-    "assets/data/cpp/p01.js",
-    "assets/data/cpp/p02.js",
-    "assets/data/cpp/p03.js",
-    "assets/data/cpp/p04.js",
-    "assets/data/cpp/p05.js",
-    "assets/data/cpp/p06.js",
-    "assets/data/cpp/p07.js",
-    "assets/data/cpp/p08.js",
-    "assets/data/cpp/p09.js",
-    "assets/data/cpp/p10.js",
-    "assets/data/cpp/p11.js",
-    "assets/data/cpp/p12.js",
-    "assets/data/cpp/p13.js",
-    "assets/data/cpp/p14.js",
-    "assets/data/cpp/p15.js",
-    "assets/data/cpp/p16.js",
-    "assets/data/cpp/p17.js",
-    "assets/data/cpp/p18.js",
-    "assets/data/cpp/p19.js",
+   "boot": [
     "assets/data/cpp-data.js"
    ],
+   "chunks": {
+    "assets/data/cpp/p00.js": [
+     "s01",
+     "s02",
+     "s03"
+    ],
+    "assets/data/cpp/p01.js": [
+     "c01",
+     "c02",
+     "c03",
+     "c04",
+     "c05"
+    ],
+    "assets/data/cpp/p02.js": [
+     "c06",
+     "c07",
+     "c08",
+     "c09",
+     "c10"
+    ],
+    "assets/data/cpp/p03.js": [
+     "c11",
+     "c12",
+     "c13",
+     "c14",
+     "c15"
+    ],
+    "assets/data/cpp/p04.js": [
+     "c16",
+     "c17",
+     "c18",
+     "c19",
+     "c20"
+    ],
+    "assets/data/cpp/p05.js": [
+     "c21",
+     "c22",
+     "c23",
+     "c24",
+     "c25"
+    ],
+    "assets/data/cpp/p06.js": [
+     "c26",
+     "c27",
+     "c28",
+     "c29",
+     "c30"
+    ],
+    "assets/data/cpp/p07.js": [
+     "c31",
+     "c32",
+     "c33",
+     "c34"
+    ],
+    "assets/data/cpp/p08.js": [
+     "c35",
+     "c36",
+     "c37",
+     "c38"
+    ],
+    "assets/data/cpp/p09.js": [
+     "c39",
+     "c40",
+     "c41",
+     "c42"
+    ],
+    "assets/data/cpp/p10.js": [
+     "c43",
+     "c44",
+     "c45",
+     "c46"
+    ],
+    "assets/data/cpp/p11.js": [
+     "c47",
+     "c48",
+     "c49",
+     "c50"
+    ],
+    "assets/data/cpp/p12.js": [
+     "c51",
+     "c52",
+     "c53",
+     "c54"
+    ],
+    "assets/data/cpp/p13.js": [
+     "c55",
+     "c56",
+     "c57",
+     "c58"
+    ],
+    "assets/data/cpp/p14.js": [
+     "c59",
+     "c60",
+     "c61",
+     "c62"
+    ],
+    "assets/data/cpp/p15.js": [
+     "c63",
+     "c64",
+     "c65",
+     "c66"
+    ],
+    "assets/data/cpp/p16.js": [
+     "c67",
+     "c68",
+     "c69",
+     "c70"
+    ],
+    "assets/data/cpp/p17.js": [
+     "c71",
+     "c72",
+     "c73",
+     "c74"
+    ],
+    "assets/data/cpp/p18.js": [
+     "c75",
+     "c76",
+     "c77",
+     "c78"
+    ],
+    "assets/data/cpp/p19.js": [
+     "c79",
+     "c80",
+     "c81"
+    ]
+   },
    "examFiles": [
     "assets/data/cpp-exam/p01.js",
     "assets/data/cpp-exam/p02.js",
@@ -1779,15 +2243,14 @@ window.MIAO_INDEX = {
     "assets/data/cpp-exam/p18.js",
     "assets/data/cpp-exam/p19.js",
     "assets/data/cpp-exam-data.js"
-   ],
-   "bytes": 966201,
-   "examBytes": 448064
+   ]
   },
   {
    "id": "cppm",
    "source": "MIAO_CPPM",
    "engine": "paper",
    "mount": "",
+   "assemble": "MIAO_CPPM_ASSEMBLE",
    "title": "C++ 掌握",
    "intro": "接「C++ 入门」往深里走：标准库容器与算法、类与 RAII、模板与泛型、数据结构与算法实战，共 132 课。每一课考过才算学完。",
    "cat": "C++",
@@ -2424,6 +2887,8 @@ window.MIAO_INDEX = {
     "m168",
     "m169",
     "m170",
+    "m171",
+    "m172",
     "m175",
     "m176",
     "m177",
@@ -2436,48 +2901,220 @@ window.MIAO_INDEX = {
     "m184",
     "m185",
     "m186",
+    "m191",
+    "m195",
     "m199"
    ],
    "keywords": [],
-   "files": [
-    "assets/data/cppm/legacy.js",
-    "assets/data/cppm/p01.js",
-    "assets/data/cppm/p02.js",
-    "assets/data/cppm/p03.js",
-    "assets/data/cppm/p04.js",
-    "assets/data/cppm/p05.js",
-    "assets/data/cppm/p06.js",
-    "assets/data/cppm/p07.js",
-    "assets/data/cppm/p08.js",
-    "assets/data/cppm/p09.js",
-    "assets/data/cppm/p10.js",
-    "assets/data/cppm/p11.js",
-    "assets/data/cppm/p12.js",
-    "assets/data/cppm/p13.js",
-    "assets/data/cppm/p14.js",
-    "assets/data/cppm/p15.js",
-    "assets/data/cppm/p16.js",
-    "assets/data/cppm/p17.js",
-    "assets/data/cppm/p18.js",
-    "assets/data/cppm/p19.js",
-    "assets/data/cppm/p20.js",
-    "assets/data/cppm/p21.js",
-    "assets/data/cppm/p22.js",
-    "assets/data/cppm/p23.js",
-    "assets/data/cppm/p24.js",
-    "assets/data/cppm/p25.js",
-    "assets/data/cppm/p26.js",
-    "assets/data/cppm/p27.js",
-    "assets/data/cppm/p28.js",
-    "assets/data/cppm/p29.js",
-    "assets/data/cppm/p30.js",
-    "assets/data/cppm/p31.js",
-    "assets/data/cppm/p32.js",
-    "assets/data/cppm/p34.js",
-    "assets/data/cppm/p35.js",
-    "assets/data/cppm/p36.js",
+   "boot": [
     "assets/data/cppm-data.js"
    ],
+   "chunks": {
+    "assets/data/cppm/legacy.js": [
+     "m173",
+     "m174",
+     "m187",
+     "m188",
+     "m189",
+     "m190",
+     "m192",
+     "m193",
+     "m194",
+     "m196",
+     "m197",
+     "m198",
+     "m200",
+     "m201",
+     "m202",
+     "m203",
+     "m204",
+     "m205",
+     "m206",
+     "m207",
+     "m208",
+     "m209",
+     "m210",
+     "m211",
+     "m212",
+     "m213"
+    ],
+    "assets/data/cppm/p01.js": [
+     "m82"
+    ],
+    "assets/data/cppm/p02.js": [
+     "m83",
+     "m84",
+     "m85"
+    ],
+    "assets/data/cppm/p03.js": [
+     "m86",
+     "m87",
+     "m88"
+    ],
+    "assets/data/cppm/p04.js": [
+     "m89",
+     "m90",
+     "m91",
+     "m92"
+    ],
+    "assets/data/cppm/p05.js": [
+     "m93",
+     "m94",
+     "m95",
+     "m96"
+    ],
+    "assets/data/cppm/p06.js": [
+     "m97",
+     "m98",
+     "m99",
+     "m100"
+    ],
+    "assets/data/cppm/p07.js": [
+     "m101",
+     "m102",
+     "m103",
+     "m104"
+    ],
+    "assets/data/cppm/p08.js": [
+     "m105",
+     "m106",
+     "m107",
+     "m108"
+    ],
+    "assets/data/cppm/p09.js": [
+     "m109",
+     "m110",
+     "m111",
+     "m112"
+    ],
+    "assets/data/cppm/p10.js": [
+     "m113",
+     "m114",
+     "m115",
+     "m116"
+    ],
+    "assets/data/cppm/p11.js": [
+     "m117",
+     "m118",
+     "m119",
+     "m120"
+    ],
+    "assets/data/cppm/p12.js": [
+     "m121",
+     "m122",
+     "m123",
+     "m124"
+    ],
+    "assets/data/cppm/p13.js": [
+     "m125",
+     "m126",
+     "m127",
+     "m128"
+    ],
+    "assets/data/cppm/p14.js": [
+     "m129",
+     "m130",
+     "m131",
+     "m132"
+    ],
+    "assets/data/cppm/p15.js": [
+     "m133",
+     "m134",
+     "m135",
+     "m136"
+    ],
+    "assets/data/cppm/p16.js": [
+     "m137",
+     "m138",
+     "m139",
+     "m140"
+    ],
+    "assets/data/cppm/p17.js": [
+     "m141",
+     "m142",
+     "m143",
+     "m144"
+    ],
+    "assets/data/cppm/p18.js": [
+     "m145",
+     "m146",
+     "m147",
+     "m148"
+    ],
+    "assets/data/cppm/p19.js": [
+     "m149",
+     "m150"
+    ],
+    "assets/data/cppm/p20.js": [
+     "m151",
+     "m152"
+    ],
+    "assets/data/cppm/p21.js": [
+     "m153",
+     "m154"
+    ],
+    "assets/data/cppm/p22.js": [
+     "m155",
+     "m156"
+    ],
+    "assets/data/cppm/p23.js": [
+     "m157",
+     "m158"
+    ],
+    "assets/data/cppm/p24.js": [
+     "m159",
+     "m160"
+    ],
+    "assets/data/cppm/p25.js": [
+     "m161",
+     "m162"
+    ],
+    "assets/data/cppm/p26.js": [
+     "m163",
+     "m164"
+    ],
+    "assets/data/cppm/p27.js": [
+     "m165",
+     "m166"
+    ],
+    "assets/data/cppm/p28.js": [
+     "m167",
+     "m168",
+     "m169",
+     "m170"
+    ],
+    "assets/data/cppm/p29.js": [
+     "m171",
+     "m172"
+    ],
+    "assets/data/cppm/p30.js": [
+     "m175",
+     "m176",
+     "m177",
+     "m178"
+    ],
+    "assets/data/cppm/p31.js": [
+     "m179",
+     "m180",
+     "m181",
+     "m182"
+    ],
+    "assets/data/cppm/p32.js": [
+     "m183",
+     "m184",
+     "m185",
+     "m186"
+    ],
+    "assets/data/cppm/p34.js": [
+     "m191"
+    ],
+    "assets/data/cppm/p35.js": [
+     "m195"
+    ],
+    "assets/data/cppm/p36.js": [
+     "m199"
+    ]
+   },
    "examFiles": [
     "assets/data/cppm-exam/p01.js",
     "assets/data/cppm-exam/p02.js",
@@ -2512,9 +3149,1171 @@ window.MIAO_INDEX = {
     "assets/data/cppm-exam/p32.js",
     "assets/data/cppm-exam/p36.js",
     "assets/data/cppm-exam-data.js"
+   ]
+  },
+  {
+   "id": "go",
+   "source": "MIAO_GO",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "Go 入门",
+   "intro": "从 Google 的并发需求讲到切片：12 课把 Go 的基础语法走完，每课都有能照敲的程序和一张机制图。",
+   "cat": "Go",
+   "diff": "入门",
+   "tags": [
+    "Go",
+    "Golang",
+    "入门",
+    "编程"
    ],
-   "bytes": 1407856,
-   "examBytes": 572303
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/go.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "go01",
+     "title": "第 1 课 · Go 的历史：Google 的并发语言"
+    },
+    {
+     "id": "go02",
+     "title": "第 2 课 · 装 Go 和 VS Code"
+    },
+    {
+     "id": "go03",
+     "title": "第 3 课 · 第一个程序：fmt.Println"
+    },
+    {
+     "id": "go04",
+     "title": "第 4 课 · 变量与短声明"
+    },
+    {
+     "id": "go05",
+     "title": "第 5 课 · 类型"
+    },
+    {
+     "id": "go06",
+     "title": "第 6 课 · 运算符"
+    },
+    {
+     "id": "go07",
+     "title": "第 7 课 · if 条件"
+    },
+    {
+     "id": "go08",
+     "title": "第 8 课 · else 与分支"
+    },
+    {
+     "id": "go09",
+     "title": "第 9 课 · for 循环"
+    },
+    {
+     "id": "go10",
+     "title": "第 10 课 · for range 与 while 写法"
+    },
+    {
+     "id": "go11",
+     "title": "第 11 课 · 函数"
+    },
+    {
+     "id": "go12",
+     "title": "第 12 课 · 数组与切片"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/go-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "c",
+   "source": "MIAO_C",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "C 入门",
+   "intro": "从贝尔实验室的 Unix 讲到字符数组：12 课把 C 的基础语法走完，每课都有能照敲的程序和一张机制图。",
+   "cat": "c",
+   "diff": "入门",
+   "tags": [
+    "C",
+    "GCC",
+    "入门",
+    "编程"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/c.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "c01",
+     "title": "第 1 课 · C 的历史：从贝尔实验室到 Unix"
+    },
+    {
+     "id": "c02",
+     "title": "第 2 课 · 装 GCC 和 VS Code"
+    },
+    {
+     "id": "c03",
+     "title": "第 3 课 · 第一个程序：printf"
+    },
+    {
+     "id": "c04",
+     "title": "第 4 课 · 变量与声明"
+    },
+    {
+     "id": "c05",
+     "title": "第 5 课 · 数据类型与 sizeof"
+    },
+    {
+     "id": "c06",
+     "title": "第 6 课 · 运算符"
+    },
+    {
+     "id": "c07",
+     "title": "第 7 课 · if 条件"
+    },
+    {
+     "id": "c08",
+     "title": "第 8 课 · else 与分支"
+    },
+    {
+     "id": "c09",
+     "title": "第 9 课 · for 循环"
+    },
+    {
+     "id": "c10",
+     "title": "第 10 课 · while 循环"
+    },
+    {
+     "id": "c11",
+     "title": "第 11 课 · 函数"
+    },
+    {
+     "id": "c12",
+     "title": "第 12 课 · 数组与字符串"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/c-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "ts",
+   "source": "MIAO_TS",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "TypeScript 入门",
+   "intro": "从 2012 年微软的那次尝试讲起：12 课把 TypeScript 的基础语法走完，每课都有能照敲的代码和一张机制图。",
+   "cat": "ts",
+   "diff": "入门",
+   "tags": [
+    "TypeScript",
+    "TS",
+    "入门",
+    "编程"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/ts.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "ts01",
+     "title": "第 1 课 · TypeScript 的历史：给 JavaScript 加类型"
+    },
+    {
+     "id": "ts02",
+     "title": "第 2 课 · 装 Node.js、VS Code 和 tsc"
+    },
+    {
+     "id": "ts03",
+     "title": "第 3 课 · 第一个程序：console.log 与类型注解"
+    },
+    {
+     "id": "ts04",
+     "title": "第 4 课 · 变量与 let/const"
+    },
+    {
+     "id": "ts05",
+     "title": "第 5 课 · 类型：string、number、boolean"
+    },
+    {
+     "id": "ts06",
+     "title": "第 6 课 · 运算符"
+    },
+    {
+     "id": "ts07",
+     "title": "第 7 课 · if 条件"
+    },
+    {
+     "id": "ts08",
+     "title": "第 8 课 · else 与分支"
+    },
+    {
+     "id": "ts09",
+     "title": "第 9 课 · for 循环"
+    },
+    {
+     "id": "ts10",
+     "title": "第 10 课 · while 循环"
+    },
+    {
+     "id": "ts11",
+     "title": "第 11 课 · 函数与参数类型"
+    },
+    {
+     "id": "ts12",
+     "title": "第 12 课 · 数组与元组"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/ts-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "github",
+   "source": "MIAO_GITHUB",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "GitHub 入门",
+   "intro": "从 Git 托管讲到 Pull Request、Pages 与 Actions：12 课把远程协作的常用动作走完，每课都有能照敲的命令和一张流程图。",
+   "cat": "github",
+   "diff": "入门",
+   "tags": [
+    "GitHub",
+    "Git",
+    "协作",
+    "入门"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/github.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "gh01",
+     "title": "第 1 课 · GitHub 的历史：从 Git 托管到协作平台"
+    },
+    {
+     "id": "gh02",
+     "title": "第 2 课 · 注册账号、装 Git 和配置 SSH"
+    },
+    {
+     "id": "gh03",
+     "title": "第 3 课 · 第一个远程仓库：init → remote → push"
+    },
+    {
+     "id": "gh04",
+     "title": "第 4 课 · origin、clone 与 pull"
+    },
+    {
+     "id": "gh05",
+     "title": "第 5 课 · 分支与 Pull Request"
+    },
+    {
+     "id": "gh06",
+     "title": "第 6 课 · Issue：把问题写成可执行的任务"
+    },
+    {
+     "id": "gh07",
+     "title": "第 7 课 · Fork 与开源协作"
+    },
+    {
+     "id": "gh08",
+     "title": "第 8 课 · Markdown 与 README"
+    },
+    {
+     "id": "gh09",
+     "title": "第 9 课 · GitHub Pages：把静态站发出去"
+    },
+    {
+     "id": "gh10",
+     "title": "第 10 课 · Actions：让机器替你跑测试"
+    },
+    {
+     "id": "gh11",
+     "title": "第 11 课 · Release 与标签"
+    },
+    {
+     "id": "gh12",
+     "title": "第 12 课 · 个人主页与后续路线"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/github-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "csharp",
+   "source": "MIAO_CSHARP",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "C# 入门",
+   "intro": "从 .NET 的跨平台讲到数组与 List：12 课走完 C# 基础语法，每课都有能照敲的程序和一张机制图。",
+   "cat": "c#",
+   "diff": "入门",
+   "tags": [
+    "C#",
+    ".NET",
+    "入门",
+    "编程"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/csharp.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "cs01",
+     "title": "第 1 课 · C# 的历史：.NET 与跨平台"
+    },
+    {
+     "id": "cs02",
+     "title": "第 2 课 · 装 .NET SDK 和 VS Code"
+    },
+    {
+     "id": "cs03",
+     "title": "第 3 课 · 第一个程序：Console.WriteLine"
+    },
+    {
+     "id": "cs04",
+     "title": "第 4 课 · 变量与 var"
+    },
+    {
+     "id": "cs05",
+     "title": "第 5 课 · 数据类型"
+    },
+    {
+     "id": "cs06",
+     "title": "第 6 课 · 运算符"
+    },
+    {
+     "id": "cs07",
+     "title": "第 7 课 · if 条件"
+    },
+    {
+     "id": "cs08",
+     "title": "第 8 课 · else 与分支"
+    },
+    {
+     "id": "cs09",
+     "title": "第 9 课 · for 循环"
+    },
+    {
+     "id": "cs10",
+     "title": "第 10 课 · while 循环"
+    },
+    {
+     "id": "cs11",
+     "title": "第 11 课 · 方法"
+    },
+    {
+     "id": "cs12",
+     "title": "第 12 课 · 数组与 List"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/csharp-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "java",
+   "source": "MIAO_JAVA",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "Java 入门",
+   "intro": "从 Oak 与 JVM 讲到数组：12 课走完 Java 的基础语法，每课都有能照敲的程序和一张机制图。",
+   "cat": "java",
+   "diff": "入门",
+   "tags": [
+    "Java",
+    "JDK",
+    "入门",
+    "编程"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/java.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "ja01",
+     "title": "第 1 课 · Java 的历史：从 Oak 到 JVM"
+    },
+    {
+     "id": "ja02",
+     "title": "第 2 课 · 装 JDK 和 VS Code"
+    },
+    {
+     "id": "ja03",
+     "title": "第 3 课 · 第一个程序：System.out.println"
+    },
+    {
+     "id": "ja04",
+     "title": "第 4 课 · 变量与命名"
+    },
+    {
+     "id": "ja05",
+     "title": "第 5 课 · 数据类型：基本类型与 String"
+    },
+    {
+     "id": "ja06",
+     "title": "第 6 课 · 运算符"
+    },
+    {
+     "id": "ja07",
+     "title": "第 7 课 · if 条件"
+    },
+    {
+     "id": "ja08",
+     "title": "第 8 课 · else 与分支"
+    },
+    {
+     "id": "ja09",
+     "title": "第 9 课 · for 循环"
+    },
+    {
+     "id": "ja10",
+     "title": "第 10 课 · while 循环"
+    },
+    {
+     "id": "ja11",
+     "title": "第 11 课 · 方法"
+    },
+    {
+     "id": "ja12",
+     "title": "第 12 课 · 数组"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/java-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "ide",
+   "source": "MIAO_IDE",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "IDE 入门（VS Code）",
+   "intro": "从编辑器的历史讲到调试与远程开发：12 课把 VS Code 的常用功能走完，每课都有能照着按的快捷键和一张界面图。",
+   "cat": "IDE",
+   "diff": "入门",
+   "tags": [
+    "VS Code",
+    "编辑器",
+    "IDE",
+    "入门"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/ide.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "ide01",
+     "title": "第 1 课 · 编辑器与 IDE 的历史"
+    },
+    {
+     "id": "ide02",
+     "title": "第 2 课 · 装 VS Code"
+    },
+    {
+     "id": "ide03",
+     "title": "第 3 课 · 界面：打开文件夹、编辑区、终端"
+    },
+    {
+     "id": "ide04",
+     "title": "第 4 课 · 编辑与快捷键"
+    },
+    {
+     "id": "ide05",
+     "title": "第 5 课 · 搜索与替换"
+    },
+    {
+     "id": "ide06",
+     "title": "第 6 课 · 扩展：装一个语言支持"
+    },
+    {
+     "id": "ide07",
+     "title": "第 7 课 · 调试：断点与单步"
+    },
+    {
+     "id": "ide08",
+     "title": "第 8 课 · Git 集成"
+    },
+    {
+     "id": "ide09",
+     "title": "第 9 课 · 终端与任务"
+    },
+    {
+     "id": "ide10",
+     "title": "第 10 课 · 工作区与设置"
+    },
+    {
+     "id": "ide11",
+     "title": "第 11 课 · 代码片段与重构"
+    },
+    {
+     "id": "ide12",
+     "title": "第 12 课 · 远程开发与后续路线"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/ide-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "rust",
+   "source": "MIAO_RUST",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "Rust 入门",
+   "intro": "从 Mozilla 的内部项目讲到 Vec：12 课走完 Rust 的入门语法，每课都有能照敲的程序和一张机制图。",
+   "cat": "Rust",
+   "diff": "入门",
+   "tags": [
+    "Rust",
+    "编程",
+    "入门",
+    "系统语言"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/rust.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "r01",
+     "title": "第 1 课 · Rust 的历史：从 Mozilla 到基金会"
+    },
+    {
+     "id": "r02",
+     "title": "第 2 课 · 装 rustup 和 VS Code"
+    },
+    {
+     "id": "r03",
+     "title": "第 3 课 · 第一个程序：println!"
+    },
+    {
+     "id": "r04",
+     "title": "第 4 课 · 变量、不可变与 mut"
+    },
+    {
+     "id": "r05",
+     "title": "第 5 课 · 标量类型"
+    },
+    {
+     "id": "r06",
+     "title": "第 6 课 · 运算符"
+    },
+    {
+     "id": "r07",
+     "title": "第 7 课 · if 条件"
+    },
+    {
+     "id": "r08",
+     "title": "第 8 课 · else 与表达式"
+    },
+    {
+     "id": "r09",
+     "title": "第 9 课 · loop 循环"
+    },
+    {
+     "id": "r10",
+     "title": "第 10 课 · while 与 for"
+    },
+    {
+     "id": "r11",
+     "title": "第 11 课 · 函数"
+    },
+    {
+     "id": "r12",
+     "title": "第 12 课 · 数组与 Vec"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/rust-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "linux",
+   "source": "MIAO_LINUX",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "Linux 入门",
+   "intro": "从 Unix 的出身讲到第一个 shell 脚本：12 课把命令行最常用的部分走一遍，每课都有能照敲的命令和一张机制图。",
+   "cat": "linux",
+   "diff": "入门",
+   "tags": [
+    "Linux",
+    "命令行",
+    "Bash",
+    "入门"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/linux.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "lx01",
+     "title": "第 1 课 · Linux 的历史：从 Unix 到内核"
+    },
+    {
+     "id": "lx02",
+     "title": "第 2 课 · 装 Linux：虚拟机或 WSL，并打开终端"
+    },
+    {
+     "id": "lx03",
+     "title": "第 3 课 · 第一个命令：pwd、ls、cd"
+    },
+    {
+     "id": "lx04",
+     "title": "第 4 课 · 文件和目录：mkdir、cp、mv、rm"
+    },
+    {
+     "id": "lx05",
+     "title": "第 5 课 · 看文件：cat、less、head、tail"
+    },
+    {
+     "id": "lx06",
+     "title": "第 6 课 · 权限与用户：chmod、chown、sudo"
+    },
+    {
+     "id": "lx07",
+     "title": "第 7 课 · 进程：ps、top、kill"
+    },
+    {
+     "id": "lx08",
+     "title": "第 8 课 · 软件包：apt / dnf 装东西"
+    },
+    {
+     "id": "lx09",
+     "title": "第 9 课 · 管道与重定向：竖线、大于号、双大于号"
+    },
+    {
+     "id": "lx10",
+     "title": "第 10 课 · 文本处理：grep、wc、sort"
+    },
+    {
+     "id": "lx11",
+     "title": "第 11 课 · 网络：ip、ping、curl、ssh"
+    },
+    {
+     "id": "lx12",
+     "title": "第 12 课 · shell 脚本入门"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/linux-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "math",
+   "source": "MIAO_MATH",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "高等数学入门",
+   "intro": "从十七世纪的两个老问题讲到微分方程：12 课走完一元微积分的骨架，公式用 Unicode 写，每课一张机制图和一段能跑的 Python。",
+   "cat": "高等数学",
+   "diff": "入门",
+   "tags": [
+    "高等数学",
+    "微积分",
+    "数学",
+    "入门"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/math.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "m01",
+     "title": "第 1 课 · 高等数学的历史：从牛顿到微积分"
+    },
+    {
+     "id": "m02",
+     "title": "第 2 课 · 准备工具：纸笔与 Python/SymPy"
+    },
+    {
+     "id": "m03",
+     "title": "第 3 课 · 函数与图像"
+    },
+    {
+     "id": "m04",
+     "title": "第 4 课 · 极限"
+    },
+    {
+     "id": "m05",
+     "title": "第 5 课 · 导数"
+    },
+    {
+     "id": "m06",
+     "title": "第 6 课 · 求导法则"
+    },
+    {
+     "id": "m07",
+     "title": "第 7 课 · 导数的应用"
+    },
+    {
+     "id": "m08",
+     "title": "第 8 课 · 积分"
+    },
+    {
+     "id": "m09",
+     "title": "第 9 课 · 微积分基本定理"
+    },
+    {
+     "id": "m10",
+     "title": "第 10 课 · 定积分的应用"
+    },
+    {
+     "id": "m11",
+     "title": "第 11 课 · 多元函数初步"
+    },
+    {
+     "id": "m12",
+     "title": "第 12 课 · 微分方程初步与后续路线"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/math-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "embedded",
+   "source": "MIAO_EMBEDDED",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "嵌入式入门",
+   "intro": "从 1971 年的第一颗微处理器讲到 RTOS：12 课用一块 Arduino 兼容板走完嵌入式的地基，每课都有能照敲的程序和一张机制图。",
+   "cat": "嵌入式",
+   "diff": "入门",
+   "tags": [
+    "嵌入式",
+    "单片机",
+    "Arduino",
+    "PlatformIO"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/embedded.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "e01",
+     "title": "第 1 课 · 嵌入式的历史：从单片机到物联网"
+    },
+    {
+     "id": "e02",
+     "title": "第 2 课 · 装工具链：VS Code 与 PlatformIO"
+    },
+    {
+     "id": "e03",
+     "title": "第 3 课 · 第一个程序：点亮 LED"
+    },
+    {
+     "id": "e04",
+     "title": "第 4 课 · GPIO 输入输出"
+    },
+    {
+     "id": "e05",
+     "title": "第 5 课 · 变量与数据类型（在单片机上）"
+    },
+    {
+     "id": "e06",
+     "title": "第 6 课 · 串口通信"
+    },
+    {
+     "id": "e07",
+     "title": "第 7 课 · 定时器"
+    },
+    {
+     "id": "e08",
+     "title": "第 8 课 · 中断"
+    },
+    {
+     "id": "e09",
+     "title": "第 9 课 · PWM"
+    },
+    {
+     "id": "e10",
+     "title": "第 10 课 · ADC"
+    },
+    {
+     "id": "e11",
+     "title": "第 11 课 · I2C 与 SPI"
+    },
+    {
+     "id": "e12",
+     "title": "第 12 课 · RTOS 入门与后续路线"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/embedded-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "algorithms",
+   "source": "MIAO_ALGORITHMS",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "算法入门",
+   "intro": "算法不是计算机的专利：从欧几里得求最大公约数，到哈希表与二分查找，12 课把最常用的算法逐个拆开，每个概念都配一段能照敲的 Python 代码和一张机制图。",
+   "cat": "算法",
+   "diff": "入门",
+   "tags": [
+    "算法",
+    "Python",
+    "入门",
+    "数据结构"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/algorithms.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "al01",
+     "title": "第 1 课 · 算法的历史：从欧几里得到计算机"
+    },
+    {
+     "id": "al02",
+     "title": "第 2 课 · 装工具：Python 和 VS Code"
+    },
+    {
+     "id": "al03",
+     "title": "第 3 课 · 第一个算法：线性查找"
+    },
+    {
+     "id": "al04",
+     "title": "第 4 课 · 时间复杂度"
+    },
+    {
+     "id": "al05",
+     "title": "第 5 课 · 数组与链表"
+    },
+    {
+     "id": "al06",
+     "title": "第 6 课 · 栈与队列"
+    },
+    {
+     "id": "al07",
+     "title": "第 7 课 · 哈希表"
+    },
+    {
+     "id": "al08",
+     "title": "第 8 课 · 排序入门：冒泡与插入"
+    },
+    {
+     "id": "al09",
+     "title": "第 9 课 · 分治排序：归并与快速"
+    },
+    {
+     "id": "al10",
+     "title": "第 10 课 · 二分查找"
+    },
+    {
+     "id": "al11",
+     "title": "第 11 课 · 递归"
+    },
+    {
+     "id": "al12",
+     "title": "第 12 课 · 树与图入门"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/algorithms-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "asm",
+   "source": "MIAO_ASM",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "汇编入门（x86-64）",
+   "intro": "从机器码讲到字符串遍历：12 课把 x86-64 汇编的基础走完，每课都有能照敲的程序和一张机制图。",
+   "cat": "汇编",
+   "diff": "入门",
+   "tags": [
+    "汇编",
+    "x86-64",
+    "NASM",
+    "系统调用"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/asm.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "as01",
+     "title": "第 1 课 · 汇编的历史：从机器码到助记符"
+    },
+    {
+     "id": "as02",
+     "title": "第 2 课 · 装 NASM、GCC 和 VS Code"
+    },
+    {
+     "id": "as03",
+     "title": "第 3 课 · 第一个程序：write 系统调用"
+    },
+    {
+     "id": "as04",
+     "title": "第 4 课 · 寄存器与数据宽度"
+    },
+    {
+     "id": "as05",
+     "title": "第 5 课 · 数据定义：db/dw/dd/dq"
+    },
+    {
+     "id": "as06",
+     "title": "第 6 课 · 寻址与算术指令"
+    },
+    {
+     "id": "as07",
+     "title": "第 7 课 · cmp 与条件跳转（if）"
+    },
+    {
+     "id": "as08",
+     "title": "第 8 课 · 无条件跳转与分支（else）"
+    },
+    {
+     "id": "as09",
+     "title": "第 9 课 · 计数循环：dec 与 jnz（for）"
+    },
+    {
+     "id": "as10",
+     "title": "第 10 课 · while 循环与比较"
+    },
+    {
+     "id": "as11",
+     "title": "第 11 课 · 函数：call / ret / 栈帧"
+    },
+    {
+     "id": "as12",
+     "title": "第 12 课 · 数组与字符串遍历"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/asm-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "basics",
+   "source": "MIAO_BASICS",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "计算机基础入门",
+   "intro": "从「一个开关只有两个状态」走到「按下一次回车发生了什么」：12 课把比特、字节、编码、溢出、门电路、指令周期和内存分层串成一条线，每课都有能当场敲的命令和一张机制图。",
+   "cat": "计算机基础",
+   "diff": "入门",
+   "tags": [
+    "计算机基础",
+    "二进制",
+    "编码",
+    "零基础"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/basics.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-27",
+   "chaps": 12,
+   "chapters": [
+    {
+     "id": "b01",
+     "title": "第 1 课 · 计算机是什么：会算数的开关"
+    },
+    {
+     "id": "b02",
+     "title": "第 2 课 · 看清这台机器：把参数抄下来"
+    },
+    {
+     "id": "b03",
+     "title": "第 3 课 · 第一个转换：把 42 写成二进制"
+    },
+    {
+     "id": "b04",
+     "title": "第 4 课 · 字节：8 个比特捆成一格"
+    },
+    {
+     "id": "b05",
+     "title": "第 5 课 · 十六进制：程序员的速记"
+    },
+    {
+     "id": "b06",
+     "title": "第 6 课 · ASCII：字符在机器里是一个数"
+    },
+    {
+     "id": "b07",
+     "title": "第 7 课 · UTF-8：中文为什么要变长"
+    },
+    {
+     "id": "b08",
+     "title": "第 8 课 · 整数溢出：盒子只有那么大"
+    },
+    {
+     "id": "b09",
+     "title": "第 9 课 · 门电路：一个开关怎么算加法"
+    },
+    {
+     "id": "b10",
+     "title": "第 10 课 · 指令周期：一条命令在 CPU 里走的路"
+    },
+    {
+     "id": "b11",
+     "title": "第 11 课 · 内存金字塔：越快的越贵"
+    },
+    {
+     "id": "b12",
+     "title": "第 12 课 · 结课串联：按下一次回车发生了什么"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/basics-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
+  },
+  {
+   "id": "js",
+   "source": "MIAO_JS",
+   "engine": "",
+   "mount": "",
+   "assemble": "",
+   "title": "JavaScript 入门",
+   "intro": "从历史到实践，一步步掌握 JavaScript 核心概念，适合零基础学习者。",
+   "cat": "js",
+   "diff": "入门",
+   "tags": [
+    "JavaScript",
+    "入门",
+    "编程",
+    "技术课"
+   ],
+   "author": "喵站官方",
+   "cover": "/assets/img/covers/js.svg",
+   "thumb": "",
+   "hero": "",
+   "updated": "2026-10-25",
+   "chaps": 3,
+   "chapters": [
+    {
+     "id": "j01",
+     "title": "第 1 课 · JavaScript 的历史"
+    },
+    {
+     "id": "j02",
+     "title": "第 2 课 · 安装 VS Code 和 Node.js"
+    },
+    {
+     "id": "j03",
+     "title": "第 3 课 · 第一个程序：console.log"
+    }
+   ],
+   "examIds": [],
+   "keywords": [],
+   "boot": [
+    "assets/data/js-data.js"
+   ],
+   "chunks": {},
+   "examFiles": []
   }
  ]
 };

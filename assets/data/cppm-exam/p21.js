@@ -9,112 +9,48 @@
 window.MIAO_CPPM_EXAM_P21 = {
   papers: [
     {
-      cid: "m153", kind: "paper", pass: 60,
-      task: "任务题目：在合并前把 lo、hi 和两半内容打印出来，看拆到合的全过程 —— 拿 5 2 8 1 9 3 跑一遍，说明白最后一行的两半为什么已经是排好的",
-      hint: "想不起来就回看本课【演示 2 · 本课任务：合并前把 lo、hi 和两半内容打出来】和【演示 3 · 数一数】，那五行打印和四种计数都在那两段里。",
+      cid: "m153", kind: "paper", mode: "ide", authored: "e743cb68", file: "main.cpp", pass: 60, task: "任务题目：在合并前把 lo、hi 和两半内容打印出来，看拆到合的全过程 —— 拿 5 2 8 1 9 3 跑一遍，说明白最后一行的两半为什么已经是排好的", hint: "想不起来就回看本课【演示 2 · 本课任务：合并前把 lo、hi 和两半内容打出来】和【演示 3 · 数一数】，那五行打印和四种计数都在那两段里。",
+      notes: ["后面那两个收尾循环管的是：一半扫空之后另一半本来就有序，整段抄进额外容器，一次比较也不做。", "实测删掉左半剩下的那个循环，六个数排成 1 2 0 3 0 0 —— 没抄的那些格子留着上一段的旧值。", "合并全程一次都不交换格子，被写的是那份额外容器，最后再整段抄回原容器。", "一千个数实测调用 1999 次、搬 19952 个格子、最深 11 层，已经排好、倒着排好、伪随机三种输入这三项一分没动，只有比较次数在变。", "那份额外容器如果当局部变量在函数里现造，实测一千个数要新建 999 次，正好等于合并的次数。"],
       questions: [
-        { id: "q1", type: "choice", score: 10,
-          stem: "合并那三个 while 里，后面两个收尾循环管的是什么？",
-          options: ["一半扫空之后，另一半剩下的本来就有序，整段抄进 tmp，一次比较也不做", "防止 i 或 j 冲出容器右边界", "把还没排好的两半再排一遍", "纯属保险，删掉结果照样对"],
-          answer: 0,
-          why: "两半都已经有序，剩下那段每个元素都不比已经进 tmp 的小，直接抄就是。实测删掉「左半剩下的」那个循环，六个数排成 1 2 0 3 0 0 —— 没抄的那些格子留着 tmp 里上一段的旧值。" },
-        { id: "q2", type: "output", score: 16, coversTask: [1],
-          stem: "（任务题）照演示 2 在合并前打印 lo、hi 和两半内容，输入 5 2 8 1 9 3，那五行打印分别是什么？一行一段，按出现的先后写。",
-          acceptLines: ["段 0..1 合并前：左 0..0 = 5   右 1..1 = 2", "段 0..2 合并前：左 0..1 = 2 5   右 2..2 = 8", "段 3..4 合并前：左 3..3 = 1   右 4..4 = 9", "段 3..5 合并前：左 3..4 = 1 9   右 5..5 = 3", "段 0..5 合并前：左 0..2 = 2 5 8   右 3..5 = 1 3 9"],
-          why: "实测五行，从最短的段开始冒出来 —— 打印插在两次递归之后，所以轮到谁的时候谁的两半已经排好了。最后一行左 2 5 8、右 1 3 9 就是本课的命门：两半各自有序，合并才只需往两头各看一眼。" },
-        { id: "q3", type: "code", score: 20, coversTask: [1],
-          stem: "（任务题的打印本体）写出打印左半内容那两句：一个 for 从 lo 走到 mid，用 std::print 把每个格子打出来。",
-          acceptRegex: ["for\\s*\\(\\s*int\\s+t\\s*=\\s*lo\\s*;\\s*t\\s*<=\\s*mid", "std::print\\s*\\("],
-          why: "起点必须是 lo 不是 0，终点必须是 mid 不是 hi —— tmp 和 v 都是整段共用的，每一段只打自己那一段。范围写错的人打印出来的两半永远对不上号。" },
-        { id: "q4", type: "choice", score: 10, coversTask: [2],
-          stem: "一千个数换三种输入实测：已经排好的、倒着排好的、固定伪随机造的。本机数字里唯一变了的是哪一项？",
-          options: ["比较次数 —— 5044 次、4932 次、8710 次；搬运格子数 19952、调用 1999 次、最深 11 层三样一分没动", "搬运格子数变了，比较次数三种输入完全一样", "最深层数随数据从 11 层涨到几十层", "三项都在变，归并跟快排一样看数据脸色"],
-          answer: 0,
-          why: "怎么拆只看段长、跟数据长什么样无关，所以调用次数、搬运格子数、层数是定死的；比较那一头反而能省 —— 两段都有序时一半扫空，剩下的整段直接抄。" },
-        { id: "q5", type: "multi", score: 12, coversTask: [2, 4],
-          stem: "关于归并这一课，本机实测说对的是？（多选，错勾任何一项整题 0 分）",
-          options: ["合并全程一次都不交换格子，被写的是额外容器 tmp，最后再整段抄回 v", "tmp 如果当局部变量在函数里现造，实测一千个数要新建 999 次，正好等于合并的次数", "同一千个数，std::sort 问比较器 10877 次，归并只比了 8695 次，排出来的结果一模一样", "归并跟快排一样，输入已经排好就会退化，一千个数能套到一千层"],
-          answers: [0, 1, 2],
-          why: "前三条都是实跑的数：搬 19952 个格子是归并付的那笔钱；第四条不成立，倒着排的一千个数照样 11 层，因为拆的形状不看数据 —— 这是归并拿额外容器换来的确定性。" },
-        { id: "q6", type: "blank", score: 8, coversTask: [3],
-          stem: "平手时让左边先落座，同键元素的相对顺序就不会变 —— 排序算法有这个性质就叫____。归并天生有，靠的是 v[i] <= v[j] 里那个等号。",
-          accept: ["稳定", "稳定性", "stable", "stable sort"],
-          why: "实测把等号让给右边，键序列 2 1 2 1 2 1 里三个键 1 的原下标就从 1、3、5 翻成 5、3、1。等号在不在，决定的正是这个性质。" },
-        { id: "q7", type: "code", score: 16, coversTask: [1],
-          stem: "（任务题看完全过程的那一步）合并完要把 tmp 抄回 v。写出那一行 for：下标从 lo 起、走到 hi 为止、把 tmp 的值写回 v。",
-          acceptRegex: ["for\\s*\\(\\s*int\\s+t\\s*=\\s*lo\\s*;\\s*t\\s*<=\\s*hi\\s*;\\s*\\+\\+t", "v\\[t\\]\\s*=\\s*tmp\\[t\\]"],
-          why: "抄回的范围必须跟这一段的 lo..hi 对齐。实测 k 从 0 起、抄回却按 tmp 的下标读，六个数排成 0 0 0 2 5 8，八个数排成 0 0 0 0 0 0 2 5 —— 前面那些格子根本没被写过。" },
-        { id: "q8", type: "choice", score: 8,
-          stem: "main 里那句 static_cast 把 hi 定成 v.size() - 1，为什么不直接写 v.size() - 1？",
-          options: ["size() 是无符号数，空容器上减一不会变负而是绕回类型最大值，上一课刚数过那个数", "因为 v.size() 返回 float，不能当整数用", "因为 merge_sort 的第三个参数只能收 char", "为了省一次除法运算"],
-          answer: 0,
-          why: "先转成 int 再减一，空容器上算出 -1，正好落进 lo >= hi 那句出口；实测空容器进来只调用 1 次、比较 0 次就收手。" }
+        { id: "q1", type: "code", score: 15, coversTask: 1, stem: "把拆这一半写出来：第一行判断这段只剩 0 或 1 个就直接 return，再一行问出对半的中点。", acceptRegex: ["if\\s*\\(\\s*\\w+\\s*>=\\s*\\w+\\s*\\)\\s*return\\s*;", "int\\s+\\w+\\s*=\\s*\\(\\s*\\w+\\s*\\+\\s*\\w+\\s*\\)\\s*/\\s*2\\s*;"], acceptOn: "code", sample: "if (lo >= hi) return;\nint mid = (lo + hi) / 2;", why: "只剩一个天然有序；mid 是下标中点，怎么拆只看段长，跟数据长什么样无关。" },
+        { id: "q2", type: "code", score: 15, coversTask: 1, stem: "对左半、右半各叫一次自己：右半那一路的下标要从 mid + 1 起。", acceptRegex: ["\\w+\\s*\\(\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*\\w+\\s*,\\s*\\w+\\s*\\)", "\\w+\\s*\\(\\s*\\w+\\s*,\\s*\\w+\\s*\\+\\s*1\\s*,\\s*\\w+\\s*,\\s*\\w+\\s*\\)"], acceptOn: "code", sample: "merge_sort(v, lo, mid, tmp);\nmerge_sort(v, mid + 1, hi, tmp);", why: "两半各自排好之后才轮得到合并；额外那份 tmp 一路传下去，别在函数里现造。" },
+        { id: "q3", type: "code", score: 20, coversTask: 1, stem: "任务第 1 条：在合并之前先打一句，格式串里带上这段的两端（lo 和 hi 都当参数递进去）。", acceptRegex: ["std\\s*::\\s*print(?:ln)?\\s*\\(\\s*\"[^\"]*合并前[^\"]*\"\\s*,\\s*\\w+\\s*,\\s*\\w+"], acceptOn: "code", sample: "std::print(\"段 {}..{} 合并前：\", lo, hi);", why: "打印插在两次递归之后、合并之前，所以轮到谁的时候谁的两半已经排好了 —— 这正是这一课要亲眼看的时刻。" },
+        { id: "q4", type: "code", score: 25, coversTask: 1, stem: "接着把两半的内容各用一圈 for 打出来：连着两句带 std::print 的循环，一圈走到 mid，一圈从 mid 之后走到 hi。", acceptRegex: ["for\\s*\\(\\s*int\\s+\\w+\\s*=\\s*[^;]{1,20};\\s*\\w+\\s*<=\\s*\\w+\\s*;\\s*\\+\\+\\s*\\w+\\s*\\)\\s*std\\s*::\\s*print\\s*\\([^)]*\\[\\s*\\w+\\s*\\][\\s\\S]{0,200}?for\\s*\\(\\s*int\\s+\\w+\\s*=\\s*[^;]{1,20};\\s*\\w+\\s*<=\\s*\\w+\\s*;\\s*\\+\\+\\s*\\w+\\s*\\)\\s*std\\s*::\\s*print\\s*\\([^)]*\\["], acceptOn: "code", sample: "for (int t = lo; t <= mid; ++t) std::print(\"{} \", v[t]);\nfor (int t = mid + 1; t <= hi; ++t) std::print(\"{} \", v[t]);", why: "六个数那一跑实测五行，从最短的段开始冒出来；最后一行左 2 5 8、右 1 3 9 就是本课的命门。" },
+        { id: "q5", type: "code", score: 25, coversTask: 1, stem: "两半都盯住当前最小的那张，把小的那张先落座：比较要带等号，写进额外容器的那一格下标当场加一。", acceptRegex: ["\\w+\\s*\\[\\s*\\w+\\s*\\+\\s*\\+\\s*\\]\\s*=\\s*\\(\\s*\\w+\\s*\\[\\s*\\w+\\s*\\]\\s*<=\\s*\\w+\\s*\\[\\s*\\w+\\s*\\]\\s*\\)\\s*\\?"], acceptOn: "code", sample: "tmp[k++] = (v[i] <= v[j]) ? v[i++] : v[j++];", why: "平手时让左边先落座，同键元素的相对顺序就不会变 —— 那个等号决定的就是这个性质叫稳定。" }
       ],
       selftest: {
         refs: [
-          { q1: 0, q2: "段 0..1 合并前：左 0..0 = 5   右 1..1 = 2\n段 0..2 合并前：左 0..1 = 2 5   右 2..2 = 8\n段 3..4 合并前：左 3..3 = 1   右 4..4 = 9\n段 3..5 合并前：左 3..4 = 1 9   右 5..5 = 3\n段 0..5 合并前：左 0..2 = 2 5 8   右 3..5 = 1 3 9", q3: "for (int t = lo; t <= mid; ++t) std::print(\"{} \", v[t]);", q4: 0, q5: [0, 1, 2], q6: "稳定", q7: "for (int t = lo; t <= hi; ++t) v[t] = tmp[t];", q8: 0 }
-        ],
+          "#include <print>\n#include <vector>\n\nvoid merge_sort(std::vector<int>& v, int lo, int hi, std::vector<int>& tmp) {\n    if (lo >= hi) return;\n    int mid = (lo + hi) / 2;\n    merge_sort(v, lo, mid, tmp);\n    merge_sort(v, mid + 1, hi, tmp);\n    std::print(\"段 {}..{} 合并前：左 {}..{} = \", lo, hi, lo, mid);\n    for (int t = lo; t <= mid; ++t) std::print(\"{} \", v[t]);\n    std::print(\"  右 {}..{} = \", mid + 1, hi);\n    for (int t = mid + 1; t <= hi; ++t) std::print(\"{} \", v[t]);\n    std::println(\"\");\n    int i = lo, j = mid + 1, k = lo;\n    while (i <= mid && j <= hi)\n        tmp[k++] = (v[i] <= v[j]) ? v[i++] : v[j++];\n    while (i <= mid) tmp[k++] = v[i++];\n    while (j <= hi) tmp[k++] = v[j++];\n    for (int t = lo; t <= hi; ++t) v[t] = tmp[t];\n}\n\nint main() {\n    std::vector<int> v = {5, 2, 8, 1, 9, 3}, tmp(v.size());\n    merge_sort(v, 0, static_cast<int>(v.size()) - 1, tmp);\n    for (int x : v) std::print(\"{} \", x);\n    std::println(\"\");\n    return 0;\n}\n"],
         wrongs: [
-          { q1: 3, q2: "段 0..5 合并前：左 0..2 = 5 2 8   右 3..5 = 1 9 3", q3: "for (int t = 0; t < v.size(); ++t) std::println(v);", q4: 1, q5: [3], q6: "递归", q7: "for (int t = 0; t <= hi; ++t) tmp[t] = v[t];", q8: 3 }
-        ],
+          "",
+          "#include <print>\n#include <vector>\n\nvoid merge_sort(std::vector<int>& v, int lo, int hi, std::vector<int>& tmp) {\n    if (lo >= hi) return;\n    int mid = (lo + hi) / 2;\n    merge_sort(v, lo, mid, tmp);\n    merge_sort(v, mid + 1, hi, tmp);\n    int i = lo, j = mid + 1, k = lo;\n    while (i <= mid && j <= hi)\n        tmp[k++] = (v[i] <= v[j]) ? v[i++] : v[j++];\n    while (i <= mid) tmp[k++] = v[i++];\n    while (j <= hi) tmp[k++] = v[j++];\n    for (int t = lo; t <= hi; ++t) v[t] = tmp[t];\n}\n\nint main() {\n    std::vector<int> v = {5, 2, 8, 1, 9, 3}, tmp(v.size());\n    merge_sort(v, 0, static_cast<int>(v.size()) - 1, tmp);\n    return 0;\n}\n",
+          "#include <print>\n#include <vector>\n\nint main() {\n    std::vector<int> v = {5, 2, 8, 1, 9, 3};\n    for (int a = 0; a < 6; ++a)\n        for (int b = 0; b < 5; ++b)\n            if (v[b] > v[b + 1]) std::println(\"换一次\");\n    return 0;\n}\n"],
         loose: [
-          { q1: "0", q2: " 段 0..1 合并前：左 0..0 = 5 右 1..1 = 2 \n段 0..2 合并前：左 0..1 = 2 5 右 2..2 = 8\n 段 3..4 合并前：左 3..3 = 1 右 4..4 = 9\n段 3..5 合并前：左 3..4 = 1 9 右 5..5 = 3\n段 0..5 合并前：左 0..2 = 2 5 8 右 3..5 = 1 3 9 ", q3: "for(int t=lo;t<=mid;t++){ std::print(\"{} \", v[t]); }", q4: "0", q5: [2, 1, 0], q6: "稳定性", q7: "for(int t = lo; t <= hi; t++)  v[t]=tmp[t] ;", q8: "0" }
-        ]
+          "#  include < print >\n#  include < vector >\n\nvoid  ms ( std :: vector < int > &  a , int  lo , int  hi , std :: vector < int > &  buf )\n{\n  if ( lo >= hi ) return ;\n  int  middle  =  ( lo + hi ) / 2 ;\n  ms ( a , lo , middle , buf ) ;\n  ms ( a , middle + 1 , hi , buf ) ;\n  std :: println ( \" 合并前这一段是 {} 到 {}\" , lo , hi ) ;\n  std :: print ( \" 左半 = \" ) ;\n  for ( int  p  =  lo ;  p  <=  middle ;  ++ p )  std :: print ( \"{} \" , a [ p ] ) ;\n  std :: print ( \" 右半 = \" ) ;\n  for ( int  p  =  middle + 1 ;  p  <=  hi ;  ++ p )  std :: print ( \"{} \" , a [ p ] ) ;\n  int  x  =  lo ,  y  =  middle + 1 ,  z  =  lo ;\n  while ( x <= middle && y <= hi )\n      buf [ z ++ ]  =  ( a [ x ] <= a [ y ] )  ?  a [ x ++ ]  :  a [ y ++ ] ;\n  while ( x <= middle )  buf [ z ++ ]  =  a [ x ++ ] ;\n  while ( y <= hi )  buf [ z ++ ]  =  a [ y ++ ] ;\n  for ( int  p  =  lo ;  p  <=  hi ;  ++ p )  a [ p ]  =  buf [ p ] ;\n}\n\nint  main ( )\n{\n  std :: vector < int >  v  =  { 5 , 2 , 8 , 1 , 9 , 3 } ,  t ( v . size ( ) ) ;\n  ms ( v , 0 , static_cast < int > ( v . size ( ) ) - 1 , t ) ;\n}\n"]
       }
     },
     {
-      cid: "m154", kind: "paper", pass: 60,
-      task: "任务题目：给那张比赛榜补第三条规则 —— 同分同罚时按名字字典序，提示就是 return a.name < b.name;。补完拿五个人跑一遍，把五行榜抄下来，说出哪两个人是靠第三条分出来的",
-      hint: "想不起来就回看本课【演示 2 · 本课任务：补第三条规则，同分同罚时按名字】和【演示 1 · 源稿这段：两条规则】，五人榜的实测顺序就写在演示 2 那段里。",
+      cid: "m154", kind: "paper", mode: "ide", authored: "2917cf51", file: "main.cpp", pass: 60, task: "任务题目：给那张比赛榜补第三条规则 —— 同分同罚时按名字字典序，提示就是 return a.name < b.name;。补完拿五个人跑一遍，把五行榜抄下来，说出哪两个人是靠第三条分出来的", hint: "想不起来就回看本课【演示 2 · 本课任务：补第三条规则，同分同罚时按名字】和【演示 1 · 源稿这段：两条规则】，五人榜的实测顺序就写在演示 2 那段里。",
+      notes: ["比较器只回答一个问题：a 严格排在 b 前面吗；要升序写小于，要降序写大于。", "实测把等号让给右边，同键元素的相对顺序就会翻过来；想保住原顺序就把原始下标写成最后一条规则。", "规则顺序就是优先级：先写的那条先判，后面几条只在前面打平时才轮得到。", "一条规则写错方向，排序算法会照错的方向把榜翻过来，还会随手打乱同键的人。"],
       questions: [
-        { id: "q1", type: "choice", score: 8,
-          stem: "喂给 std::sort 的那个 lambda，被问到的问题到底是哪一个？",
-          options: ["a 严格排在 b 前面吗", "a 和 b 要不要交换位置", "a 是不是等于 b", "这一轮排完了没有"],
-          answer: 0,
-          why: "这跟第 151 课冒泡那句 if 不是一回事：冒泡判相邻两格反没反，这里判任意两个的先后关系，而且实测会被问上千次 —— 一千个人问了 8543 次，三个人只问 4 次。" },
-        { id: "q2", type: "code", score: 24, coversTask: [1],
-          stem: "（任务题）把第三条规则补进比较器：前两条都打平的时候，按名字的字典序定出谁在前。写出那一句 return。",
-          acceptRegex: ["return\\s+a\\.name\\s*<\\s*b\\.name\\s*;"],
-          why: "源稿那句提示原样落地就是这一行。注意顺序：它必须排在另外两条之后，而且前两条都得是「不同才定案」的写法，控制流才轮得到它。" },
-        { id: "q3", type: "output", score: 24, coversTask: [1],
-          stem: "（任务题那一跑）数据是小明 300 分罚时 120、小强 300 分罚时 90、小红 280 分罚时 100、阿强 300 分罚时 90、艾红 280 分罚时 100，三条规则跑完打印什么？一人一行，格式是 第n名 名字 n分 罚时n。",
-          acceptLines: ["第1名 小强 300分 罚时90", "第2名 阿强 300分 罚时90", "第3名 小明 300分 罚时120", "第4名 小红 280分 罚时100", "第5名 艾红 280分 罚时100"],
-          why: "实测五行。小强 和 阿强 前两条全打平，是第三条把他们分开的；而 艾红 与 小红 同分同罚时，同样靠第三条定案。名字那一行比的是字节，不是拼音。" },
-        { id: "q4", type: "choice", score: 10, coversTask: [3],
-          stem: "本机把前两条规则的先后调换，罚时那条在前、分数那条在后，还是源稿那三个人，榜变成什么？",
-          options: ["小强、小红、小明 —— 小红只有 280 分，却因罚时比 小明 少而排到第二", "跟原来一样：小强、小明、小红", "小明、小强、小红", "直接崩，std::sort 不许改规则顺序"],
-          answer: 0,
-          why: "每一行的写法一个字没变，只是先后换了，榜就换了 —— 先写的那条先判，这就是优先级。" },
-        { id: "q5", type: "multi", score: 10, coversTask: [1, 4],
-          stem: "关于这张榜，本机实测说对的是？（多选，错勾任何一项整题 0 分）",
-          options: ["平手那一行写成带等号的版本，让两个人互相都说对方在前，实测 500 人一组直接段错误、核心已转储", "std::sort 不保证同键维持原顺序：64 个完全等价的人排完从 G48 开头", "想保住同分的原始顺序，就把「原来站在第几个」写成最后一条规则", "a.name < b.name 拿中文名来排，得到的就是拼音序"],
-          answers: [0, 1, 2],
-          why: "第四条不成立：实测六个中文名排成 小强 张明 李华 王芳 艾红 阿强，走的是 UTF-8 字节；英文数字混排才符合直觉。前三条都是本机跑出来的，第一条那种错还会时有时无 —— 两千个全同分的反而能跑完。" },
-        { id: "q6", type: "blank", score: 6, coversTask: [1],
-          stem: "第一条规则是「分数不一样才当场定案」，写出来是 if 里判 a.score 与 b.score ____，再 return 比分的那一句。",
-          accept: ["!=", "不相等", "not equal", "not_equal"],
-          why: "这个判据就是短路链的开关：只有打平才把决定权交给下一条。写成相等就定案，同分的人永远轮不到罚时那一条。" },
-        { id: "q7", type: "code", score: 10,
-          stem: "写出比较器第一条规则的 return 那半句：分高的排在前头。",
-          acceptRegex: ["a\\.score\\s*>\\s*b\\.score"],
-          why: "它回答的是 a 在前吗，想要降序就得写 a.score > b.score。实测照冒泡的口径写成 a.score < b.score，榜整个反过来：小红 280 分排第一，两个 300 分的掉到最后。" },
-        { id: "q8", type: "choice", score: 8,
-          stem: "比较器这段代码在一千个人那一跑里被问了 8543 次。这条实测告诉我们的最要紧的一句话是？",
-          options: ["规则里的每一行都会被反复执行，多塞一句 if 就是八千多次额外开销，所以规则要写短、更要写对", "比较器只会执行一次，写多长都无所谓", "std::sort 是靠次数固定的算法，问多少次跟数据无关", "被问 8543 次说明排序失败了"],
-          answer: 0,
-          why: "三个人实测只问 4 次，一千个人 8543 次。它被问上千次，所以「平手时绝不能返回 true」这种口径错误才会把排序算法的前提直接掀翻，而啰嗦的写法也是真付钱的。" }
+        { id: "q1", type: "code", score: 15, coversTask: 1, stem: "任务第 1 条：把第三条规则补进比较器 —— 前两条都打平的时候，按名字的字典序定出谁在前，写出那一句 return。", acceptRegex: ["return\\s+a\\s*\\.\\s*name\\s*<\\s*b\\s*\\.\\s*name\\s*;"], acceptOn: "code", sample: "return a.name < b.name;", why: "源稿那句提示原样落地就是这一行；它必须排在另外两条之后，前两条都得是不同才定案的写法，控制流才轮得到它。" },
+        { id: "q2", type: "code", score: 15, stem: "写出第一条规则的 return 那半句：分高的排在前头。", acceptRegex: ["a\\s*\\.\\s*score\\s*>\\s*b\\s*\\.\\s*score"], acceptOn: "code", sample: "return a.score > b.score;", why: "比较器问的是 a 该不该排在 b 前面，要降序就得写 a.score > b.score；照冒泡的口径写成小于，榜整个反过来。" },
+        { id: "q3", type: "code", score: 20, coversTask: 1, stem: "写一行：给这张榜调排序，三个参数一个不能少 —— 从哪到哪，再加那条由比较器填进去的规则（lambda 的那对中括号要出现）。", acceptRegex: ["std\\s*::\\s*sort\\s*\\(", "\\.\\s*begin\\s*\\(\\s*\\)\\s*,", "\\.\\s*end\\s*\\(\\s*\\)\\s*,", "\\[\\s*\\]"], acceptOn: "code", sample: "std::sort(ps.begin(), ps.end(), [](const Player& a, const Player& b) { /* 规则 */ });", why: "只给两个参数的 sort 按默认大小排；规则是第三个参数，位置错不了，那对中括号加一对圆括号就是 lambda。" },
+        { id: "q4", type: "code", score: 20, coversTask: 1, stem: "写整行：第二条规则 —— 只有罚时不一样时才当场定案，罚时少的排在前头。", acceptRegex: ["a\\s*\\.\\s*penalty\\s*!=\\s*b\\s*\\.\\s*penalty", "return\\s+a\\s*\\.\\s*penalty\\s*<\\s*b\\s*\\.\\s*penalty"], acceptOn: "code", sample: "if (a.penalty != b.penalty) return a.penalty < b.penalty;", why: "不等号是这条规则的开关：罚时不同才把结论交出去，一样就继续往后轮；写成等号，同罚时的人永远轮不到名字那条。" },
+        { id: "q5", type: "code", score: 15, stem: "把两条规则的先后调换：先判罚时不同就 return，再直接 return 比分那一句，两行都写在比较器的花括号里。", acceptRegex: ["if\\s*\\(\\s*a\\s*\\.\\s*penalty\\s*!=\\s*b\\s*\\.\\s*penalty\\s*\\)\\s*return\\s+a\\s*\\.\\s*penalty\\s*<\\s*b\\s*\\.\\s*penalty", "return\\s+a\\s*\\.\\s*score\\s*>\\s*b\\s*\\.\\s*score"], acceptOn: "code", sample: "if (a.penalty != b.penalty) return a.penalty < b.penalty;\nreturn a.score > b.score;", why: "比较器从上往下走，先写的那条先判 —— 顺序本身就是优先级；写法一个字没动，换了先后，280 分那个就因为罚时少挤到前面去。" },
+        { id: "q6", type: "code", score: 15, stem: "同分的人想保住原来的先后：把记着原始位置的那个下标写成最后一条规则，写出那一句 return。", acceptRegex: ["return\\s+a\\s*\\.\\s*idx\\s*<\\s*b\\s*\\.\\s*idx\\s*;"], acceptOn: "code", sample: "struct Row { std::string name; int score; int idx; };\nstd::sort(r.begin(), r.end(), [](const Row& a, const Row& b) {\n    if (a.score != b.score) return a.score > b.score;\n    return a.idx < b.idx;\n});", why: "下标互不相等，任何两个人都能判出胜负，排序就不会再随手把同键的人打乱；写在最后，等于只在前面几条都打平时才启用。" }
       ],
       selftest: {
         refs: [
-          { q1: 0, q2: "return a.name < b.name;", q3: "第1名 小强 300分 罚时90\n第2名 阿强 300分 罚时90\n第3名 小明 300分 罚时120\n第4名 小红 280分 罚时100\n第5名 艾红 280分 罚时100", q4: 0, q5: [0, 1, 2], q6: "!=", q7: "a.score > b.score", q8: 0 }
-        ],
+          "#include <algorithm>\n#include <print>\n#include <string>\n#include <vector>\n\nstruct Player { std::string name; int score; int penalty; };\nstruct Row { std::string name; int score; int idx; };\n\nint main() {\n    std::vector<Player> ps = {{\"小明\", 300, 120}, {\"小强\", 300, 90}, {\"小红\", 280, 100}};\n    std::sort(ps.begin(), ps.end(), [](const Player& a, const Player& b) {\n        if (a.score != b.score) return a.score > b.score;\n        if (a.penalty != b.penalty) return a.penalty < b.penalty;\n        return a.name < b.name;\n    });\n    for (size_t i = 0; i < ps.size(); ++i)\n        std::println(\"第{}名 {} {}分\", i + 1, ps[i].name, ps[i].score);\n\n    std::sort(ps.begin(), ps.end(), [](const Player& a, const Player& b) {\n        if (a.penalty != b.penalty) return a.penalty < b.penalty;\n        return a.score > b.score;\n    });\n\n    std::vector<Row> r = {{\"阿一\", 300, 0}, {\"阿二\", 300, 1}, {\"阿三\", 280, 2}};\n    std::sort(r.begin(), r.end(), [](const Row& a, const Row& b) {\n        if (a.score != b.score) return a.score > b.score;\n        return a.idx < b.idx;\n    });\n    return 0;\n}\n"],
         wrongs: [
-          { q1: 1, q2: "return a.score > b.score;", q3: "第1名 小明 300分 罚时120\n第2名 小强 300分 罚时90\n第3名 小红 280分 罚时100\n第4名 阿强 300分 罚时90\n第5名 艾红 280分 罚时100", q4: 1, q5: [3], q6: "==", q7: "a.score < b.score", q8: 1 }
-        ],
+          "",
+          "#include <algorithm>\n#include <string>\n#include <vector>\n\nstruct Player { std::string name; int score; int penalty; };\n\nint main() {\n    std::vector<Player> ps = {{\"小明\", 300, 120}};\n    std::sort(ps.begin(), ps.end(), [](const Player& a, const Player& b) {\n        if (a.score != b.score) return a.score > b.score;\n        return a.penalty < b.penalty;\n    });\n    return 0;\n}\n",
+          "#include <string>\n#include <vector>\n\nstruct Player { std::string name; int score; int penalty; };\n\nint main() {\n    std::vector<Player> ps;\n    std::sort(ps.begin(), ps.end());\n    return 0;\n}\n",
+          "#include <algorithm>\n#include <string>\n\nstruct Player { std::string name; int score; int penalty; };\n\nbool rule(const Player& a, const Player& b) {\n    return a.score > b.score;\n}\n\nint main() {\n    Player x{\"小明\", 300, 120};\n    Player y{\"小强\", 300, 90};\n    bool first = rule(x, y);\n    std::vector<Player> ps;\n    ps.push_back(x);\n    return 0;\n}\n"],
         loose: [
-          { q1: "0", q2: "return  a.name<b.name ;", q3: " 第1名 小强 300分 罚时90 \n第2名 阿强 300分 罚时90\n 第3名 小明 300分 罚时120\n第4名 小红 280分 罚时100\n第5名 艾红 280分 罚时100 ", q4: "0", q5: [2, 1, 0], q6: "不相等", q7: "a.score>b.score", q8: "0" }
-        ]
+          "#  include < algorithm >\n#  include < print >\n#  include < string >\n#  include < vector >\n\nstruct  Player  {  std :: string  name ;  int  score ;  int  penalty ; } ;\nstruct  Row  {  std :: string  name ;  int  score ;  int  idx ; } ;\n\nint  main ( )\n{\n  std :: vector < Player >  board  =  { { \"阿一\" , 300 , 120 } ,  { \"阿二\" , 300 , 90 } } ;\n  std :: sort ( board . begin ( ) ,  board . end ( ) , [ ] ( const Player &  a , const Player &  b )  {\n      if ( a . penalty != b . penalty )  return a . penalty < b . penalty ;\n      return a . score > b . score ;\n  } ) ;\n  std :: vector < Player >  board2  =  { { \"阿一\" , 300 , 120 } ,  { \"阿二\" , 300 , 90 } } ;\n  std :: sort ( board2 . begin ( ) , board2 . end ( ) , [ ] ( const Player & a , const Player & b )  {\n      if ( a . score != b . score )  return a . score > b . score ;\n      if ( a . penalty != b . penalty )  return a . penalty < b . penalty ;\n      return a . name < b . name ;\n  } ) ;\n  std :: vector < Row >  rows  =  { { \"甲\" , 10 , 0 } ,  { \"乙\" , 10 , 1 } } ;\n  std :: sort ( rows . begin ( ) , rows . end ( ) , [ ] ( const Row & a , const Row & b )  {\n      return a . idx < b . idx ;\n  } ) ;\n}\n"]
       }
-    }
+    },
   ]
 };

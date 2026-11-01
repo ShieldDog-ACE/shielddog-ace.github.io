@@ -15,6 +15,12 @@
       <a class="logo" href="#/"><b>喵站</b><span>MIAO&nbsp;DEV</span></a>
       <nav class="nav-links">
         <a href="#/">首页</a>
+        <!-- 首页右边一排入口：这一版只挂入口、不建页面（点了只给提示），内容页后补。
+             用 <a> 而不是 <button>，样式跟「首页」完全同源；点击在 app.js 里拦下来。 -->
+        <a href="#/" class="nav-soon" data-soon="视频">视频</a>
+        <a href="#/" class="nav-soon" data-soon="考试">考试</a>
+        <a href="#/" class="nav-soon" data-soon="幻灯片">幻灯片</a>
+        <a href="#/" class="nav-soon" data-soon="公式化学习">公式化学习</a>
       </nav>
       <div class="nav-search">
         <input id="navSearch" type="search" placeholder="搜索教程 / 章节标题 / 作者，回车搜索" aria-label="搜索">
@@ -39,13 +45,13 @@
 
   <div id="toast"></div>
 
-  <!-- ── 首屏就这五份，共 ~120 KB（纯静态、无后端、不拉服务） ─────────────────────
-       site.js   登记清单：每门课要加载哪些脚本、考场用哪套引擎
-       index.js  目录：课程元信息 + 每章标题 + 排考情况（dev/tools/gen-index.js 生成）
-       data.js   本地数据层 + 按需加载器
+  <!-- ── 首屏就这五份 js：176 KB（gzip 57 KB），纯静态、无后端、不拉服务 ──────────
+       site.js   登记清单：每门课的骨架是哪几份、考场用哪套引擎
+       index.js  目录：课程元信息 + 每章标题 + 骨架(boot)与「这一章的正文在哪个文件」(chunks)
+       data.js   本地数据层 + 分层加载器
        app.js    视图与路由
-       正文、题库、沙箱、音频一律不在这里：<script> 由 data.js 在「点开那一门课」时注入。
-       谁把 assets/data/*.js 往这里补一行，首屏就退回 3 MB —— 加课请改 site.js 再跑 gen-index.js。 -->
+       正文、题库、沙箱、音频一律不在这里：<script> 由 data.js 在「点开那一章」时注入。
+       谁把 assets/data/*.js 往这里补一行，首屏就退回 4 MB —— 加课请改 site.js 再跑 gen-index.js。 -->
   <script src="assets/data/site.js"></script>
   <script src="assets/data/index.js"></script>
   <script src="assets/js/data.js"></script>

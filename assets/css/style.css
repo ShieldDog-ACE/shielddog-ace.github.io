@@ -242,6 +242,9 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
   font-size: .95rem; color: var(--text-2); font-weight: 500;
 }
 .nav-links a:hover, .nav-links a.on { color: var(--accent); background: var(--accent-soft); }
+/* 窄屏先收起「首页」右边那几个新入口：导航栏地方不够时先保首页与搜索框，
+   别把搜索框挤成一条缝（≤720 时整组 .nav-links 会一起收起）。 */
+@media (max-width: 900px) { .nav-links .nav-soon { display: none; } }
 .nav-search { flex: 1; max-width: 360px; margin-left: auto; }
 .nav-search input {
   width: 100%; height: 36px; padding: 0 14px;
@@ -786,6 +789,23 @@ footer .container > * { font-size: .82rem; color: var(--text-2); }
   color: var(--text-3); margin-left: 6px;
 }
 .en-card-word .en-w { font-size: .8rem; margin-top: 2px; }
+/* 短语下一行的中文意思：整句直译，句里每个词的意思都能对上 */
+.en-card-word .en-phcn { margin-top: 1px; font-size: .8rem; color: var(--text-2); line-height: 1.5; }
+
+/* 核心句子（先背句子再记单词）：一句一张卡，英文一行、中文一行，播放键放行首。
+   竖排一列不搞双栏 —— 句子长短差得多，双栏会把长句挤成三行。 */
+.en-sents { display: flex; flex-direction: column; gap: 8px; }
+.en-sent {
+  border: 1px solid var(--border); border-radius: 10px; background: var(--panel);
+  padding: 10px 14px; min-width: 0;
+}
+.en-sent-top { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.en-sent-top .en-play { flex: 0 0 auto; }
+.en-sent-en {
+  font-family: var(--mono); font-weight: 700; font-size: 1.02rem;
+  color: var(--accent); min-width: 0; overflow-wrap: anywhere;
+}
+.en-sent-cn { margin-top: 3px; padding-left: 2px; font-size: .92rem; color: var(--text-2); line-height: 1.55; }
 
 @media (max-width: 640px) {
   .en-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -918,7 +938,10 @@ body.exam-mode header.nav, body.exam-mode footer { display: none; }
 .crumb-btn.on { color: var(--accent); border-color: var(--accent); }
 
 /* ---- 编辑器：题面那几行 # 注释就在 textarea 里（exam-ui.js 锁区），下面只有行号列 + 叠层 ---- */
-.ide-editor { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; background: var(--ide-bg); }
+/* 编辑器宿主：overflow 必须 clip 在自己这一格里。
+   上一版没框住：.ed 的高度由行号列（gutter）的内容撑出来，题面一长（c06 十五行 + 字号 19）
+   就顶穿宿主，绝对定位的 textarea 与它的横向滚动条画到下面那条页签栏上 —— 他说的「横杠优先级高、会穿模」。 */
+.ide-editor { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; overflow: hidden; background: var(--ide-bg); }
 
 /* 代码区：行号列 + 相对定位的叠层（当前行 → 着色层 → 透明 textarea） */
 .ide-code-row { flex: 1 1 auto; display: flex; min-height: 0; }
@@ -978,7 +1001,9 @@ body.exam-mode header.nav, body.exam-mode footer { display: none; }
 /* ---- 共用代码编辑器控件（code-editor.js）：IDE 与笔试代码题同一套四层 ----
    四层（行号 / 当前行 / 着色 / textarea）复用上面 .gt-code / .ide-cur / .ide-hl / .ide-ta，
    这里只补控件自己的外壳与补全弹框。卡片里那枚要自带边框，IDE 里外层已经框好了。 */
-.ed { display: flex; flex-direction: column; min-height: 0; background: var(--ide-bg); }
+.ed { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; background: var(--ide-bg); }
+/* 卡片里那枚（.ed-box）由 JS 给死高度，不跟着宿主长 */
+.ed-box { flex: 0 0 auto; }
 .ed-box { border: 1px solid var(--border); border-radius: 9px; }
 .ed-box:focus-within { border-color: var(--accent); }
 /* 补全弹框贴在光标那一格下面，坐标由 JS 量（字体回落时按格宽乘会偏半个字） */
@@ -995,12 +1020,15 @@ body.exam-mode header.nav, body.exam-mode footer { display: none; }
 .ide-panel {
   flex: 0 0 232px; display: flex; flex-direction: column; min-height: 0;
   border-top: 1px solid var(--ide-line); background: var(--ide-term-bg);
+  /* 压在编辑区之上：编辑器那四层是绝对定位的，静态的栏会被它盖住（就是那条穿模） */
+  position: relative; z-index: 3;
 }
 .ide-panel.hidden-panel { flex: 0 0 auto; }
 .ide-panel.hidden-panel .panel-body { display: none; }
 .panel-split { flex: 0 0 4px; cursor: row-resize; background: transparent; }
 .panel-split:hover, .panel-split.on { background: var(--accent); }
 .panel-tabs {
+  position: relative; z-index: 1;
   flex: 0 0 32px; display: flex; align-items: center; gap: 18px; padding: 0 14px;
   font-size: .7rem; letter-spacing: .6px; color: var(--text-3);
   background: var(--ide-chrome); border-bottom: 1px solid var(--ide-line); user-select: none;
@@ -1157,8 +1185,9 @@ body.exam-mode header.nav, body.exam-mode footer { display: none; }
 .eq-play:hover, .eq-play.playing { border-color: var(--accent); color: var(--accent); }
 .eq-play.playing { background: var(--accent); color: var(--accent-contrast); }
 .eq-ico { font-size: .62rem; }
-/* 1fr 的下限是 min-content，长音标/长谐音会把格子撑破卡片 —— 一律 minmax(0,1fr) 让它能收缩 */
-.en-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+/* 选项一律一行一个：题目 / 选项一 / 选项二 / 选项三 / 选项四 从上往下排，
+   双栏网格会让考生扫读时漏项 —— 这里只留一列，长选项照样能收缩 */
+.en-opts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .en-opt {
   display: flex; align-items: center; gap: 8px; padding: 9px 11px; cursor: pointer; min-width: 0;
   border: 1px solid var(--border); border-radius: 9px; background: var(--bg-soft);
@@ -1233,6 +1262,8 @@ body.exam-mode header.nav, body.exam-mode footer { display: none; }
 .pp-area { width: 100%; box-sizing: border-box; resize: vertical; padding: 9px 12px; border-radius: 9px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: .85rem; line-height: 1.6; }
 .pp-area.mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
 .pp-area:focus { outline: none; border-color: var(--accent); }
+/* 代码题的编辑器宿主：控件在里面自己排版，这一层只保证它别把卡片撑破 */
+.pp-ed { min-width: 0; }
 /* 排序题：候选步骤（点一下进你的顺序）与你的顺序（再点撤下） */
 .pp-order { display: flex; flex-wrap: wrap; gap: 7px; }
 .pp-step { display: inline-flex; align-items: center; padding: 6px 11px; border-radius: 9px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font-size: .8rem; cursor: pointer; min-width: 0; overflow-wrap: anywhere; text-align: left; }
@@ -1275,7 +1306,6 @@ body.exam-mode header.nav, body.exam-mode footer { display: none; }
 .code-block pre code .rd-atr, .ide .rd-atr { color: var(--rd-atr); }
 
 @media (max-width: 720px) {
-  .en-opts { grid-template-columns: minmax(0, 1fr); }
   .en-cols { grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr); gap: 0 6px; }
 }
 
